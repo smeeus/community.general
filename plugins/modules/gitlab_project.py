@@ -51,6 +51,17 @@ options:
     type: str
     choices: ["disabled", "enabled"]
     version_added: "14.3.0"
+  auto_devops_deploy_strategy:
+    description:
+      - Sets Auto DevOps Deploy strategy for the project.
+    type: str
+    choices: ["continuous", "manual", "timed_incremental"]
+    version_added: "14.3.0"
+  auto_devops_enabled:
+    description:
+      - Enable Auto DevOps for the project.
+    type: bool
+    version_added: "14.3.0"
   avatar_path:
     description:
       - Absolute path image to configure avatar. File size should not exceed 200 kb.
@@ -556,6 +567,8 @@ class GitLabProject:
             "allow_merge_on_skipped_pipeline": options["allow_merge_on_skipped_pipeline"],
             "analytics_access_level": options["analytics_access_level"],
             "auto_cancel_pending_pipelines": options["auto_cancel_pending_pipelines"],
+            "auto_devops_deploy_strategy": options["auto_devops_deploy_strategy"],
+            "auto_devops_enabled": options["auto_devops_enabled"],
             "builds_access_level": options["builds_access_level"],
             "build_timeout": options["build_timeout"],
             "ci_config_path": options["ci_config_path"],
@@ -759,6 +772,8 @@ def main():
             allow_merge_on_skipped_pipeline=dict(type="bool"),
             analytics_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             auto_cancel_pending_pipelines=dict(type="str", choices=["disabled", "enabled"]),
+            auto_devops_deploy_strategy=dict(type="str", choices=["continuous", "manual", "timed_incremental"]),
+            auto_devops_enabled=dict(type="bool"),
             avatar_path=dict(type="path"),
             builds_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             build_timeout=dict(type="int"),
@@ -849,6 +864,8 @@ def main():
     allow_merge_on_skipped_pipeline = module.params["allow_merge_on_skipped_pipeline"]
     analytics_access_level = module.params["analytics_access_level"]
     auto_cancel_pending_pipelines = module.params["auto_cancel_pending_pipelines"]
+    auto_devops_deploy_strategy = module.params["auto_devops_deploy_strategy"]
+    auto_devops_enabled = module.params["auto_devops_enabled"]
     avatar_path = module.params["avatar_path"]
     builds_access_level = module.params["builds_access_level"]
     build_timeout = module.params["build_timeout"]
@@ -966,6 +983,8 @@ def main():
                 "allow_merge_on_skipped_pipeline": allow_merge_on_skipped_pipeline,
                 "analytics_access_level": analytics_access_level,
                 "auto_cancel_pending_pipelines": auto_cancel_pending_pipelines,
+                "auto_devops_deploy_strategy": auto_devops_deploy_strategy,
+                "auto_devops_enabled": auto_devops_enabled,
                 "avatar_path": avatar_path,
                 "builds_access_level": builds_access_level,
                 "build_timeout": build_timeout,

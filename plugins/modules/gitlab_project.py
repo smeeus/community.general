@@ -472,6 +472,11 @@ options:
       - Enable shared runners for the project.
     type: bool
     version_added: "3.7.0"
+  show_default_award_emojis:
+    description:
+      - Show default emoji reactions for the project.
+    type: bool
+    version_added: "14.3.0"
   snippets_access_level:
     description:
       - Set visibility of snippets for the project.
@@ -726,6 +731,7 @@ class GitLabProject:
             "reviewer_assignment_strategy": options["reviewer_assignment_strategy"],
             "service_desk_enabled": options["service_desk_enabled"],
             "shared_runners_enabled": options["shared_runners_enabled"],
+            "show_default_award_emojis": options["show_default_award_emojis"],
             "snippets_access_level": options["snippets_access_level"],
             "snippets_enabled": options["snippets_enabled"],
             "squash_option": options["squash_option"],
@@ -969,6 +975,7 @@ def main():
             reviewer_assignment_strategy=dict(type="str", choices=["disabled", "code_owners"]),
             service_desk_enabled=dict(type="bool"),
             shared_runners_enabled=dict(type="bool"),
+            show_default_award_emojis=dict(type="bool"),
             snippets_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             snippets_enabled=dict(default=True, type="bool"),
             squash_option=dict(type="str", choices=["never", "always", "default_off", "default_on"]),
@@ -1070,6 +1077,7 @@ def main():
     reviewer_assignment_strategy = module.params["reviewer_assignment_strategy"]
     service_desk_enabled = module.params["service_desk_enabled"]
     shared_runners_enabled = module.params["shared_runners_enabled"]
+    show_default_award_emojis = module.params["show_default_award_emojis"]
     snippets_access_level = module.params["snippets_access_level"]
     snippets_enabled = module.params["snippets_enabled"]
     squash_option = module.params["squash_option"]
@@ -1206,6 +1214,7 @@ def main():
                 "reviewer_assignment_strategy": reviewer_assignment_strategy,
                 "service_desk_enabled": service_desk_enabled,
                 "shared_runners_enabled": shared_runners_enabled,
+                "show_default_award_emojis": show_default_award_emojis,
                 "snippets_access_level": snippets_access_level,
                 "snippets_enabled": snippets_enabled,
                 "squash_option": squash_option,

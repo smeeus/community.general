@@ -232,8 +232,20 @@ options:
   packages_enabled:
     description:
       - Enable GitLab package repository.
+      - O(package_registry_access_level) and O(packages_enabled) are mutually exclusive.
     type: bool
     version_added: "3.4.0"
+  package_registry_access_level:
+    description:
+      - Set visibility of the package registry for the project.
+      - V(disabled) disables the package registry.
+      - V(private) enables the package registry and sets visibility to C(Only project members).
+      - V(enabled) enables the package registry and sets visibility to C(Everyone with access).
+      - V(public) enables the package registry and sets visibility to C(Everyone).
+      - O(package_registry_access_level) and O(packages_enabled) are mutually exclusive.
+    type: str
+    choices: ["disabled", "private", "enabled", "public"]
+    version_added: "14.3.0"
   pages_access_level:
     description:
       - V(private) means that accessing pages tab is allowed only to project members.
@@ -481,6 +493,7 @@ class GitLabProject:
             ],
             "only_allow_merge_if_pipeline_succeeds": options["only_allow_merge_if_pipeline_succeeds"],
             "packages_enabled": options["packages_enabled"],
+            "package_registry_access_level": options["package_registry_access_level"],
             "pages_access_level": options["pages_access_level"],
             "releases_access_level": options["releases_access_level"],
             "remove_source_branch_after_merge": options["remove_source_branch_after_merge"],
@@ -689,6 +702,7 @@ def main():
             only_allow_merge_if_all_discussions_are_resolved=dict(type="bool"),
             only_allow_merge_if_pipeline_succeeds=dict(type="bool"),
             packages_enabled=dict(type="bool"),
+            package_registry_access_level=dict(type="str", choices=["disabled", "private", "enabled", "public"]),
             pages_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             path=dict(type="str"),
             releases_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
@@ -719,6 +733,7 @@ def main():
             ["api_token", "api_job_token"],
             ["group", "username"],
             ["issues_access_level", "issues_enabled"],
+            ["package_registry_access_level", "packages_enabled"],
         ],
         required_together=[
             ["api_username", "api_password"],
@@ -755,6 +770,7 @@ def main():
     only_allow_merge_if_all_discussions_are_resolved = module.params["only_allow_merge_if_all_discussions_are_resolved"]
     only_allow_merge_if_pipeline_succeeds = module.params["only_allow_merge_if_pipeline_succeeds"]
     packages_enabled = module.params["packages_enabled"]
+    package_registry_access_level = module.params["package_registry_access_level"]
     pages_access_level = module.params["pages_access_level"]
     project_description = module.params["description"]
     project_name = module.params["name"]
@@ -864,6 +880,7 @@ def main():
                 "only_allow_merge_if_all_discussions_are_resolved": only_allow_merge_if_all_discussions_are_resolved,
                 "only_allow_merge_if_pipeline_succeeds": only_allow_merge_if_pipeline_succeeds,
                 "packages_enabled": packages_enabled,
+                "package_registry_access_level": package_registry_access_level,
                 "pages_access_level": pages_access_level,
                 "path": project_path,
                 "releases_access_level": releases_access_level,

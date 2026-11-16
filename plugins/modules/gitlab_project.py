@@ -247,6 +247,11 @@ options:
       - The path of the project you want to create, this is server_url/O(group)/O(path).
       - If not supplied, O(name) is used.
     type: str
+  printing_merge_request_link_enabled:
+    description:
+      - Show link to create/view merge request when pushing from the command line.
+    type: bool
+    version_added: "14.3.0"
   releases_access_level:
     description:
       - V(private) means that accessing release is allowed only to project members.
@@ -482,6 +487,7 @@ class GitLabProject:
             "only_allow_merge_if_pipeline_succeeds": options["only_allow_merge_if_pipeline_succeeds"],
             "packages_enabled": options["packages_enabled"],
             "pages_access_level": options["pages_access_level"],
+            "printing_merge_request_link_enabled": options["printing_merge_request_link_enabled"],
             "releases_access_level": options["releases_access_level"],
             "remove_source_branch_after_merge": options["remove_source_branch_after_merge"],
             "repository_access_level": options["repository_access_level"],
@@ -691,6 +697,7 @@ def main():
             packages_enabled=dict(type="bool"),
             pages_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             path=dict(type="str"),
+            printing_merge_request_link_enabled=dict(type="bool"),
             releases_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             remove_source_branch_after_merge=dict(type="bool"),
             repository_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
@@ -759,6 +766,7 @@ def main():
     project_description = module.params["description"]
     project_name = module.params["name"]
     project_path = module.params["path"]
+    printing_merge_request_link_enabled = module.params["printing_merge_request_link_enabled"]
     releases_access_level = module.params["releases_access_level"]
     remove_source_branch_after_merge = module.params["remove_source_branch_after_merge"]
     repository_access_level = module.params["repository_access_level"]
@@ -866,6 +874,7 @@ def main():
                 "packages_enabled": packages_enabled,
                 "pages_access_level": pages_access_level,
                 "path": project_path,
+                "printing_merge_request_link_enabled": printing_merge_request_link_enabled,
                 "releases_access_level": releases_access_level,
                 "remove_source_branch_after_merge": remove_source_branch_after_merge,
                 "repository_access_level": repository_access_level,

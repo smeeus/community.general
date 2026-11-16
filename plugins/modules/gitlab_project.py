@@ -116,6 +116,11 @@ options:
     description:
       - An description for the project.
     type: str
+  emails_enabled:
+    description:
+      - Enable email notifications.
+    type: bool
+    version_added: "14.3.0"
   environments_access_level:
     description:
       - V(private) means that deployment to environment is allowed only to project members.
@@ -464,6 +469,7 @@ class GitLabProject:
             "container_expiration_policy": options["container_expiration_policy"],
             "container_registry_access_level": options["container_registry_access_level"],
             "description": options["description"],
+            "emails_enabled": options["emails_enabled"],
             "environments_access_level": options["environments_access_level"],
             "feature_flags_access_level": options["feature_flags_access_level"],
             "forking_access_level": options["forking_access_level"],
@@ -671,6 +677,7 @@ def main():
             container_registry_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             default_branch=dict(type="str"),
             description=dict(type="str"),
+            emails_enabled=dict(type="bool"),
             environments_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             feature_flags_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             forking_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
@@ -738,6 +745,7 @@ def main():
     container_expiration_policy = module.params["container_expiration_policy"]
     container_registry_access_level = module.params["container_registry_access_level"]
     default_branch = module.params["default_branch"]
+    emails_enabled = module.params["emails_enabled"]
     environments_access_level = module.params["environments_access_level"]
     feature_flags_access_level = module.params["feature_flags_access_level"]
     forking_access_level = module.params["forking_access_level"]
@@ -848,6 +856,7 @@ def main():
                 "container_registry_access_level": container_registry_access_level,
                 "default_branch": default_branch,
                 "description": project_description,
+                "emails_enabled": emails_enabled,
                 "environments_access_level": environments_access_level,
                 "feature_flags_access_level": feature_flags_access_level,
                 "forking_access_level": forking_access_level,

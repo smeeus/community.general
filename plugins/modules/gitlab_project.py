@@ -42,6 +42,13 @@ options:
       - This option is only used on creation, not for updates.
     type: path
     version_added: "4.2.0"
+  build_git_strategy:
+    description:
+      - Git strategy to use when fetching the project in CI/CD pipelines.
+    default: "fetch"
+    type: str
+    choices: ["clone", "fetch"]
+    version_added: "14.3.0"
   build_timeout:
     description:
       - Maximum number of seconds a CI job can run.
@@ -459,6 +466,7 @@ class GitLabProject:
         project_options = {
             "allow_merge_on_skipped_pipeline": options["allow_merge_on_skipped_pipeline"],
             "builds_access_level": options["builds_access_level"],
+            "build_git_strategy": options["build_git_strategy"],
             "build_timeout": options["build_timeout"],
             "ci_config_path": options["ci_config_path"],
             "container_expiration_policy": options["container_expiration_policy"],
@@ -655,6 +663,7 @@ def main():
             allow_merge_on_skipped_pipeline=dict(type="bool"),
             avatar_path=dict(type="path"),
             builds_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
+            build_git_strategy=dict(type="str", default="fetch", choices=["clone", "fetch"]),
             build_timeout=dict(type="int"),
             ci_config_path=dict(type="str"),
             container_expiration_policy=dict(
@@ -733,6 +742,7 @@ def main():
     allow_merge_on_skipped_pipeline = module.params["allow_merge_on_skipped_pipeline"]
     avatar_path = module.params["avatar_path"]
     builds_access_level = module.params["builds_access_level"]
+    build_git_strategy = module.params["build_git_strategy"]
     build_timeout = module.params["build_timeout"]
     ci_config_path = module.params["ci_config_path"]
     container_expiration_policy = module.params["container_expiration_policy"]
@@ -842,6 +852,7 @@ def main():
                 "allow_merge_on_skipped_pipeline": allow_merge_on_skipped_pipeline,
                 "avatar_path": avatar_path,
                 "builds_access_level": builds_access_level,
+                "build_git_strategy": build_git_strategy,
                 "build_timeout": build_timeout,
                 "ci_config_path": ci_config_path,
                 "container_expiration_policy": container_expiration_policy,

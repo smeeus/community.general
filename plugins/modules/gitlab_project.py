@@ -553,6 +553,11 @@ options:
     choices: ["private", "internal", "public"]
     aliases:
       - visibility_level
+  warn_about_potentially_unwanted_characters:
+    description:
+      - Enable warnings about usage of potentially unwanted characters in the project.
+    type: bool
+    version_added: "14.3.0"
   wiki_access_level:
     description:
       - Set visibility of the wiki for the project.
@@ -764,6 +769,7 @@ class GitLabProject:
             "template_project_id": options["template_project_id"],
             "use_custom_template": options["use_custom_template"],
             "visibility": options["visibility"],
+            "warn_about_potentially_unwanted_characters": options["warn_about_potentially_unwanted_characters"],
             "wiki_access_level": options["wiki_access_level"],
             "wiki_enabled": options["wiki_enabled"],
         }
@@ -1020,6 +1026,7 @@ def main():
             visibility=dict(
                 type="str", default="private", choices=["internal", "private", "public"], aliases=["visibility_level"]
             ),
+            warn_about_potentially_unwanted_characters=dict(type="bool"),
             wiki_access_level=dict(type="str", default="enabled", choices=["disabled", "private", "enabled"]),
             wiki_enabled=dict(type="bool", default=True),
         )
@@ -1124,6 +1131,7 @@ def main():
     use_custom_template = module.params["use_custom_template"]
     username = module.params["username"]
     visibility = module.params["visibility"]
+    warn_about_potentially_unwanted_characters = module.params["warn_about_potentially_unwanted_characters"]
     wiki_access_level = module.params["wiki_access_level"]
     wiki_enabled = module.params["wiki_enabled"]
 
@@ -1263,6 +1271,7 @@ def main():
                 "topics": topics,
                 "use_custom_template": use_custom_template,
                 "visibility": visibility,
+                "warn_about_potentially_unwanted_characters": warn_about_potentially_unwanted_characters,
                 "wiki_access_level": wiki_access_level,
                 "wiki_enabled": wiki_enabled,
             },

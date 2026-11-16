@@ -144,6 +144,11 @@ options:
     description:
       - ID or the full path of the group of which this projects belongs to.
     type: str
+  group_runners_enabled:
+    description:
+      - Enable group runners for the project.
+    type: bool
+    version_added: "14.3.0"
   import_url:
     description:
       - Git repository which is imported into gitlab.
@@ -675,6 +680,7 @@ def main():
             feature_flags_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             forking_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             group=dict(type="str"),
+            group_runners_enabled=dict(type="bool"),
             import_url=dict(type="str"),
             infrastructure_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             initialize_with_readme=dict(type="bool", default=False),
@@ -742,6 +748,7 @@ def main():
     feature_flags_access_level = module.params["feature_flags_access_level"]
     forking_access_level = module.params["forking_access_level"]
     group_identifier = module.params["group"]
+    group_runners_enabled = module.params["group_runners_enabled"]
     import_url = module.params["import_url"]
     infrastructure_access_level = module.params["infrastructure_access_level"]
     initialize_with_readme = module.params["initialize_with_readme"]
@@ -851,6 +858,7 @@ def main():
                 "environments_access_level": environments_access_level,
                 "feature_flags_access_level": feature_flags_access_level,
                 "forking_access_level": forking_access_level,
+                "group_runners_enabled": group_runners_enabled,
                 "import_url": import_url,
                 "infrastructure_access_level": infrastructure_access_level,
                 "initialize_with_readme": initialize_with_readme,

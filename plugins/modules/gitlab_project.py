@@ -445,6 +445,11 @@ options:
     type: str
     choices: ["disabled", "private", "enabled"]
     version_added: "6.4.0"
+  request_access_enabled:
+    description:
+      - Allow users to request member access.
+    type: bool
+    version_added: "14.3.0"
   service_desk_enabled:
     description:
       - Enable Service Desk.
@@ -704,6 +709,7 @@ class GitLabProject:
             "repository_access_level": options["repository_access_level"],
             "requirements_access_level": options["requirements_access_level"],
             "security_and_compliance_access_level": options["security_and_compliance_access_level"],
+            "request_access_enabled": options["request_access_enabled"],
             "service_desk_enabled": options["service_desk_enabled"],
             "shared_runners_enabled": options["shared_runners_enabled"],
             "snippets_access_level": options["snippets_access_level"],
@@ -944,6 +950,7 @@ def main():
             repository_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             requirements_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             security_and_compliance_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
+            request_access_enabled=dict(type="bool"),
             service_desk_enabled=dict(type="bool"),
             shared_runners_enabled=dict(type="bool"),
             snippets_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
@@ -1042,6 +1049,7 @@ def main():
     repository_access_level = module.params["repository_access_level"]
     requirements_access_level = module.params["requirements_access_level"]
     security_and_compliance_access_level = module.params["security_and_compliance_access_level"]
+    request_access_enabled = module.params["request_access_enabled"]
     service_desk_enabled = module.params["service_desk_enabled"]
     shared_runners_enabled = module.params["shared_runners_enabled"]
     snippets_access_level = module.params["snippets_access_level"]
@@ -1175,6 +1183,7 @@ def main():
                 "repository_access_level": repository_access_level,
                 "requirements_access_level": requirements_access_level,
                 "security_and_compliance_access_level": security_and_compliance_access_level,
+                "request_access_enabled": request_access_enabled,
                 "service_desk_enabled": service_desk_enabled,
                 "shared_runners_enabled": shared_runners_enabled,
                 "snippets_access_level": snippets_access_level,

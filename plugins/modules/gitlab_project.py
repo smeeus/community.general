@@ -36,6 +36,15 @@ options:
       - Set whether or not merge requests can be merged with skipped jobs.
     type: bool
     version_added: "3.4.0"
+  analytics_access_level:
+    description:
+      - Set visibility of analytics for the project.
+      - V(disabled) disables analytics.
+      - V(private) enables analytics and sets visibility to C(Only project members).
+      - V(enabled) enables analytics and sets visibility to C(Everyone with access).
+    type: str
+    choices: ["disabled", "private", "enabled"]
+    version_added: "14.3.0"
   avatar_path:
     description:
       - Absolute path image to configure avatar. File size should not exceed 200 kb.
@@ -200,11 +209,31 @@ options:
     choices: ["ff", "merge", "rebase_merge"]
     default: merge
     version_added: "1.0.0"
+  merge_requests_access_level:
+    description:
+      - Set visibility of merge requests for the project.
+      - V(disabled) disables merge requests.
+      - V(private) enables merge requests and sets visibility to C(Only project members).
+      - V(enabled) enables merge requests and sets visibility to C(Everyone with access).
+      - O(merge_requests_access_level) and O(merge_requests_enabled) are mutually exclusive.
+    type: str
+    choices: ["disabled", "private", "enabled"]
+    version_added: "14.3.0"
   merge_requests_enabled:
     description:
       - If merge requests can be made or not.
+      - O(merge_requests_access_level) and O(merge_requests_enabled) are mutually exclusive.
     type: bool
     default: true
+  model_experiments_access_level:
+    description:
+      - Set visibility of machine learning model experiments for the project.
+      - V(disabled) disables machine learning model experiments.
+      - V(private) enables machine learning model experiments and sets visibility to C(Only project members).
+      - V(enabled) enables machine learning model experiments and sets visibility to C(Everyone with access).
+    type: str
+    choices: ["disabled", "private", "enabled"]
+    version_added: "14.3.0"
   model_registry_access_level:
     description:
       - Set visibility of machine learning model registry for the project.
@@ -241,8 +270,20 @@ options:
   packages_enabled:
     description:
       - Enable GitLab package repository.
+      - O(package_registry_access_level) and O(packages_enabled) are mutually exclusive.
     type: bool
     version_added: "3.4.0"
+  package_registry_access_level:
+    description:
+      - Set visibility of the package registry for the project.
+      - V(disabled) disables the package registry.
+      - V(private) enables the package registry and sets visibility to C(Only project members).
+      - V(enabled) enables the package registry and sets visibility to C(Everyone with access).
+      - V(public) enables the package registry and sets visibility to C(Everyone).
+      - O(package_registry_access_level) and O(packages_enabled) are mutually exclusive.
+    type: str
+    choices: ["disabled", "private", "enabled", "public"]
+    version_added: "14.3.0"
   pages_access_level:
     description:
       - Set visibility of GitLab Pages for the project.
@@ -282,6 +323,15 @@ options:
     type: str
     choices: ["disabled", "private", "enabled"]
     version_added: "9.3.0"
+  requirements_access_level:
+    description:
+      - Set visibility of requirements management for the project.
+      - V(disabled) disables requirements management.
+      - V(private) enables requirements management and sets visibility to C(Only project members).
+      - V(enabled) enables requirements management and sets visibility to C(Everyone with access).
+    type: str
+    choices: ["disabled", "private", "enabled"]
+    version_added: "14.3.0"
   security_and_compliance_access_level:
     description:
       - Set visibility of security and compliance for the project.
@@ -302,9 +352,20 @@ options:
       - Enable shared runners for the project.
     type: bool
     version_added: "3.7.0"
+  snippets_access_level:
+    description:
+      - Set visibility of snippets for the project.
+      - V(disabled) disables snippets.
+      - V(private) enables snippets and sets visibility to C(Only project members).
+      - V(enabled) enables snippets and sets visibility to C(Everyone with access).
+      - O(snippets_access_level) and O(snippets_enabled) are mutually exclusive.
+    type: str
+    choices: ["disabled", "private", "enabled"]
+    version_added: "14.3.0"
   snippets_enabled:
     description:
       - If creating snippets should be available or not.
+      - O(snippets_access_level) and O(snippets_enabled) are mutually exclusive.
     type: bool
     default: true
   squash_option:
@@ -343,9 +404,21 @@ options:
     choices: ["private", "internal", "public"]
     aliases:
       - visibility_level
+  wiki_access_level:
+    description:
+      - Set visibility of the wiki for the project.
+      - V(disabled) disables the wiki.
+      - V(private) enables the wiki and sets visibility to C(Only project members).
+      - V(enabled) enables the wiki and sets visibility to C(Everyone with access).
+      - O(wiki_access_level) and O(wiki_enabled) are mutually exclusive.
+    default: enabled
+    type: str
+    choices: ["disabled", "private", "enabled"]
+    version_added: "14.3.0"
   wiki_enabled:
     description:
       - If an wiki for the project should be available or not.
+      - O(wiki_access_level) and O(wiki_enabled) are mutually exclusive.
     type: bool
     default: true
 """
@@ -475,6 +548,7 @@ class GitLabProject:
         changed = False
         project_options = {
             "allow_merge_on_skipped_pipeline": options["allow_merge_on_skipped_pipeline"],
+            "analytics_access_level": options["analytics_access_level"],
             "builds_access_level": options["builds_access_level"],
             "build_timeout": options["build_timeout"],
             "ci_config_path": options["ci_config_path"],
@@ -489,7 +563,9 @@ class GitLabProject:
             "issues_enabled": options["issues_enabled"],
             "lfs_enabled": options["lfs_enabled"],
             "merge_method": options["merge_method"],
+            "merge_requests_access_level": options["merge_requests_access_level"],
             "merge_requests_enabled": options["merge_requests_enabled"],
+            "model_experiments_access_level": options["model_experiments_access_level"],
             "model_registry_access_level": options["model_registry_access_level"],
             "monitor_access_level": options["monitor_access_level"],
             "name": project_name,
@@ -498,16 +574,20 @@ class GitLabProject:
             ],
             "only_allow_merge_if_pipeline_succeeds": options["only_allow_merge_if_pipeline_succeeds"],
             "packages_enabled": options["packages_enabled"],
+            "package_registry_access_level": options["package_registry_access_level"],
             "pages_access_level": options["pages_access_level"],
             "releases_access_level": options["releases_access_level"],
             "remove_source_branch_after_merge": options["remove_source_branch_after_merge"],
             "repository_access_level": options["repository_access_level"],
+            "requirements_access_level": options["requirements_access_level"],
             "security_and_compliance_access_level": options["security_and_compliance_access_level"],
             "service_desk_enabled": options["service_desk_enabled"],
             "shared_runners_enabled": options["shared_runners_enabled"],
+            "snippets_access_level": options["snippets_access_level"],
             "snippets_enabled": options["snippets_enabled"],
             "squash_option": options["squash_option"],
             "visibility": options["visibility"],
+            "wiki_access_level": options["wiki_access_level"],
             "wiki_enabled": options["wiki_enabled"],
         }
 
@@ -670,6 +750,7 @@ def main():
     argument_spec.update(
         dict(
             allow_merge_on_skipped_pipeline=dict(type="bool"),
+            analytics_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             avatar_path=dict(type="path"),
             builds_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             build_timeout=dict(type="int"),
@@ -699,21 +780,26 @@ def main():
             issues_enabled=dict(type="bool", default=True),
             lfs_enabled=dict(default=False, type="bool"),
             merge_method=dict(type="str", default="merge", choices=["merge", "rebase_merge", "ff"]),
+            merge_requests_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             merge_requests_enabled=dict(type="bool", default=True),
+            model_experiments_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             model_registry_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             monitor_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             name=dict(type="str", required=True),
             only_allow_merge_if_all_discussions_are_resolved=dict(type="bool"),
             only_allow_merge_if_pipeline_succeeds=dict(type="bool"),
             packages_enabled=dict(type="bool"),
+            package_registry_access_level=dict(type="str", choices=["disabled", "private", "enabled", "public"]),
             pages_access_level=dict(type="str", choices=["disabled", "private", "enabled", "public"]),
             path=dict(type="str"),
             releases_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             remove_source_branch_after_merge=dict(type="bool"),
             repository_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
+            requirements_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             security_and_compliance_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             service_desk_enabled=dict(type="bool"),
             shared_runners_enabled=dict(type="bool"),
+            snippets_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             snippets_enabled=dict(default=True, type="bool"),
             squash_option=dict(type="str", choices=["never", "always", "default_off", "default_on"]),
             state=dict(type="str", default="present", choices=["absent", "present", "archived", "unarchived"]),
@@ -722,6 +808,7 @@ def main():
             visibility=dict(
                 type="str", default="private", choices=["internal", "private", "public"], aliases=["visibility_level"]
             ),
+            wiki_access_level=dict(type="str", default="enabled", choices=["disabled", "private", "enabled"]),
             wiki_enabled=dict(type="bool", default=True),
         )
     )
@@ -736,6 +823,10 @@ def main():
             ["api_token", "api_job_token"],
             ["group", "username"],
             ["issues_access_level", "issues_enabled"],
+            ["merge_requests_access_level", "merge_requests_enabled"],
+            ["package_registry_access_level", "packages_enabled"],
+            ["snippets_access_level", "snippets_enabled"],
+            ["wiki_access_level", "wiki_enabled"],
         ],
         required_together=[
             ["api_username", "api_password"],
@@ -748,6 +839,7 @@ def main():
     gitlab_instance = gitlab_authentication(module)
 
     allow_merge_on_skipped_pipeline = module.params["allow_merge_on_skipped_pipeline"]
+    analytics_access_level = module.params["analytics_access_level"]
     avatar_path = module.params["avatar_path"]
     builds_access_level = module.params["builds_access_level"]
     build_timeout = module.params["build_timeout"]
@@ -766,12 +858,15 @@ def main():
     issues_enabled = module.params["issues_enabled"]
     lfs_enabled = module.params["lfs_enabled"]
     merge_method = module.params["merge_method"]
+    merge_requests_access_level = module.params["merge_requests_access_level"]
     merge_requests_enabled = module.params["merge_requests_enabled"]
+    model_experiments_access_level = module.params["model_experiments_access_level"]
     model_registry_access_level = module.params["model_registry_access_level"]
     monitor_access_level = module.params["monitor_access_level"]
     only_allow_merge_if_all_discussions_are_resolved = module.params["only_allow_merge_if_all_discussions_are_resolved"]
     only_allow_merge_if_pipeline_succeeds = module.params["only_allow_merge_if_pipeline_succeeds"]
     packages_enabled = module.params["packages_enabled"]
+    package_registry_access_level = module.params["package_registry_access_level"]
     pages_access_level = module.params["pages_access_level"]
     project_description = module.params["description"]
     project_name = module.params["name"]
@@ -779,15 +874,18 @@ def main():
     releases_access_level = module.params["releases_access_level"]
     remove_source_branch_after_merge = module.params["remove_source_branch_after_merge"]
     repository_access_level = module.params["repository_access_level"]
+    requirements_access_level = module.params["requirements_access_level"]
     security_and_compliance_access_level = module.params["security_and_compliance_access_level"]
     service_desk_enabled = module.params["service_desk_enabled"]
     shared_runners_enabled = module.params["shared_runners_enabled"]
+    snippets_access_level = module.params["snippets_access_level"]
     snippets_enabled = module.params["snippets_enabled"]
     squash_option = module.params["squash_option"]
     state = module.params["state"]
     topics = module.params["topics"]
     username = module.params["username"]
     visibility = module.params["visibility"]
+    wiki_access_level = module.params["wiki_access_level"]
     wiki_enabled = module.params["wiki_enabled"]
 
     # Set project_path to project_name if it is empty.
@@ -857,6 +955,7 @@ def main():
             namespace,
             {
                 "allow_merge_on_skipped_pipeline": allow_merge_on_skipped_pipeline,
+                "analytics_access_level": analytics_access_level,
                 "avatar_path": avatar_path,
                 "builds_access_level": builds_access_level,
                 "build_timeout": build_timeout,
@@ -875,24 +974,30 @@ def main():
                 "issues_enabled": issues_enabled,
                 "lfs_enabled": lfs_enabled,
                 "merge_method": merge_method,
+                "merge_requests_access_level": merge_requests_access_level,
                 "merge_requests_enabled": merge_requests_enabled,
+                "model_experiments_access_level": model_experiments_access_level,
                 "model_registry_access_level": model_registry_access_level,
                 "monitor_access_level": monitor_access_level,
                 "only_allow_merge_if_all_discussions_are_resolved": only_allow_merge_if_all_discussions_are_resolved,
                 "only_allow_merge_if_pipeline_succeeds": only_allow_merge_if_pipeline_succeeds,
                 "packages_enabled": packages_enabled,
+                "package_registry_access_level": package_registry_access_level,
                 "pages_access_level": pages_access_level,
                 "path": project_path,
                 "releases_access_level": releases_access_level,
                 "remove_source_branch_after_merge": remove_source_branch_after_merge,
                 "repository_access_level": repository_access_level,
+                "requirements_access_level": requirements_access_level,
                 "security_and_compliance_access_level": security_and_compliance_access_level,
                 "service_desk_enabled": service_desk_enabled,
                 "shared_runners_enabled": shared_runners_enabled,
+                "snippets_access_level": snippets_access_level,
                 "snippets_enabled": snippets_enabled,
                 "squash_option": squash_option,
                 "topics": topics,
                 "visibility": visibility,
+                "wiki_access_level": wiki_access_level,
                 "wiki_enabled": wiki_enabled,
             },
         ):

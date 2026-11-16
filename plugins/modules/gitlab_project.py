@@ -36,6 +36,11 @@ options:
       - Allow merge when skipped pipelines exist.
     type: bool
     version_added: "3.4.0"
+  autoclose_referenced_issues:
+    description:
+      - Set whether auto-closing referenced issues on default branch.
+    type: bool
+    version_added: "14.3.0"
   avatar_path:
     description:
       - Absolute path image to configure avatar. File size should not exceed 200 kb.
@@ -458,6 +463,7 @@ class GitLabProject:
         changed = False
         project_options = {
             "allow_merge_on_skipped_pipeline": options["allow_merge_on_skipped_pipeline"],
+            "autoclose_referenced_issues": options["autoclose_referenced_issues"],
             "builds_access_level": options["builds_access_level"],
             "build_timeout": options["build_timeout"],
             "ci_config_path": options["ci_config_path"],
@@ -653,6 +659,7 @@ def main():
     argument_spec.update(
         dict(
             allow_merge_on_skipped_pipeline=dict(type="bool"),
+            autoclose_referenced_issues=dict(type="bool"),
             avatar_path=dict(type="path"),
             builds_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             build_timeout=dict(type="int"),
@@ -731,6 +738,7 @@ def main():
     gitlab_instance = gitlab_authentication(module)
 
     allow_merge_on_skipped_pipeline = module.params["allow_merge_on_skipped_pipeline"]
+    autoclose_referenced_issues = module.params["autoclose_referenced_issues"]
     avatar_path = module.params["avatar_path"]
     builds_access_level = module.params["builds_access_level"]
     build_timeout = module.params["build_timeout"]
@@ -840,6 +848,7 @@ def main():
             namespace,
             {
                 "allow_merge_on_skipped_pipeline": allow_merge_on_skipped_pipeline,
+                "autoclose_referenced_issues": autoclose_referenced_issues,
                 "avatar_path": avatar_path,
                 "builds_access_level": builds_access_level,
                 "build_timeout": build_timeout,

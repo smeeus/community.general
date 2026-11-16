@@ -33,7 +33,7 @@ attributes:
 options:
   allow_merge_on_skipped_pipeline:
     description:
-      - Allow merge when skipped pipelines exist.
+      - Set whether or not merge requests can be merged with skipped jobs.
     type: bool
     version_added: "3.4.0"
   avatar_path:
@@ -44,26 +44,27 @@ options:
     version_added: "4.2.0"
   build_timeout:
     description:
-      - Maximum number of seconds a CI job can run.
+      - The maximum amount of time, in seconds, that a CI job can run.
       - If not specified on creation, GitLab imposes a default value.
     type: int
     version_added: "10.6.0"
   builds_access_level:
     description:
-      - V(private) means that repository CI/CD is allowed only to project members.
-      - V(disabled) means that repository CI/CD is disabled.
-      - V(enabled) means that repository CI/CD is enabled.
+      - Set visibility of CI/CD pipelines for the project.
+      - V(disabled) disables CI/CD pipelines.
+      - V(private) enables CI/CD pipelines and sets visibility to C(Only project members).
+      - V(enabled) enables CI/CD pipelines and sets visibility to C(Everyone with access).
     type: str
-    choices: ["private", "disabled", "enabled"]
+    choices: ["disabled", "private", "enabled"]
     version_added: "6.2.0"
   ci_config_path:
     description:
-      - Custom path to the CI configuration file for this project.
+      - Custom path to the CI configuration file for the project.
     type: str
     version_added: "3.7.0"
   container_expiration_policy:
     description:
-      - Project cleanup policy for its container registry.
+      - Set the container registry image cleanup policy for the project.
     type: dict
     suboptions:
       cadence:
@@ -98,15 +99,16 @@ options:
     version_added: "9.3.0"
   container_registry_access_level:
     description:
-      - V(private) means that container registry is allowed only to project members.
-      - V(disabled) means that container registry is disabled.
-      - V(enabled) means that container registry is enabled.
+      - Set visibility of container registry for the project.
+      - V(disabled) disables container registry.
+      - V(private) enables container registry and sets visibility to C(Only project members).
+      - V(enabled) enables container registry and sets visibility to C(Everyone with access).
     type: str
-    choices: ["private", "disabled", "enabled"]
+    choices: ["disabled", "private", "enabled"]
     version_added: "6.2.0"
   default_branch:
     description:
-      - The default branch name for this project.
+      - The default branch name for the project.
       - For project creation, this option requires O(initialize_with_readme=true).
       - For project update, the branch must exist.
       - Supports project's default branch update since community.general 8.0.0.
@@ -114,35 +116,38 @@ options:
     version_added: "4.2.0"
   description:
     description:
-      - An description for the project.
+      - A description for the project.
     type: str
   environments_access_level:
     description:
-      - V(private) means that deployment to environment is allowed only to project members.
-      - V(disabled) means that deployment to environment is disabled.
-      - V(enabled) means that deployment to environment is enabled.
+      - Set visibility of environments for the project.
+      - V(disabled) disables deployments to environments.
+      - V(private) enables deployments to environments and sets visibility to C(Only project members).
+      - V(enabled) enables deployments to environments and sets visibility to C(Everyone with access).
     type: str
-    choices: ["private", "disabled", "enabled"]
+    choices: ["disabled", "private", "enabled"]
     version_added: "6.4.0"
   feature_flags_access_level:
     description:
-      - V(private) means that feature rollout is allowed only to project members.
-      - V(disabled) means that feature rollout is disabled.
-      - V(enabled) means that feature rollout is enabled.
+      - Set visibility of feature flags for the project.
+      - V(disabled) disables feature rollout.
+      - V(private) enables feature rollout and sets visibility to C(Only project members).
+      - V(enabled) enables feature rollout and sets visibility to C(Everyone with access).
     type: str
-    choices: ["private", "disabled", "enabled"]
+    choices: ["disabled", "private", "enabled"]
     version_added: "6.4.0"
   forking_access_level:
     description:
-      - V(private) means that repository forks is allowed only to project members.
-      - V(disabled) means that repository forks are disabled.
-      - V(enabled) means that repository forks are enabled.
+      - Set visibility of forks for the project.
+      - V(disabled) disables forks.
+      - V(private) enables forks and sets visibility to C(Only project members).
+      - V(enabled) enables forks and sets visibility to C(Everyone with access).
     type: str
-    choices: ["private", "disabled", "enabled"]
+    choices: ["disabled", "private", "enabled"]
     version_added: "6.2.0"
   group:
     description:
-      - ID or the full path of the group of which this projects belongs to.
+      - ID or the full path of the group of which the projects belongs to.
     type: str
   import_url:
     description:
@@ -151,11 +156,12 @@ options:
     type: str
   infrastructure_access_level:
     description:
-      - V(private) means that configuring infrastructure is allowed only to project members.
-      - V(disabled) means that configuring infrastructure is disabled.
-      - V(enabled) means that configuring infrastructure is enabled.
+      - Set visibility of infrastructure management for the project.
+      - V(disabled) disables infrastructure management.
+      - V(private) enables infrastructure management and sets visibility to C(Only project members).
+      - V(enabled) enables infrastructure management and sets visibility to C(Everyone with access).
     type: str
-    choices: ["private", "disabled", "enabled"]
+    choices: ["disabled", "private", "enabled"]
     version_added: "6.4.0"
   initialize_with_readme:
     description:
@@ -166,12 +172,13 @@ options:
     version_added: "4.0.0"
   issues_access_level:
     description:
-      - V(private) means that accessing issues tab is allowed only to project members.
-      - V(disabled) means that accessing issues tab is disabled.
-      - V(enabled) means that accessing issues tab is enabled.
+      - Set visibility of issues for the project.
+      - V(disabled) disables issues.
+      - V(private) enables issues and sets visibility to C(Only project members).
+      - V(enabled) enables issues and sets visibility to C(Everyone with access).
       - O(issues_access_level) and O(issues_enabled) are mutually exclusive.
     type: str
-    choices: ["private", "disabled", "enabled"]
+    choices: ["disabled", "private", "enabled"]
     version_added: "9.4.0"
   issues_enabled:
     description:
@@ -200,19 +207,21 @@ options:
     default: true
   model_registry_access_level:
     description:
-      - V(private) means that accessing model registry tab is allowed only to project members.
-      - V(disabled) means that accessing model registry tab is disabled.
-      - V(enabled) means that accessing model registry tab is enabled.
+      - Set visibility of machine learning model registry for the project.
+      - V(disabled) disables machine learning model registry.
+      - V(private) enables machine learning model registry and sets visibility to C(Only project members).
+      - V(enabled) enables machine learning model registry and sets visibility to C(Everyone with access).
     type: str
-    choices: ["private", "disabled", "enabled"]
+    choices: ["disabled", "private", "enabled"]
     version_added: "9.3.0"
   monitor_access_level:
     description:
-      - V(private) means that monitoring health is allowed only to project members.
-      - V(disabled) means that monitoring health is disabled.
-      - V(enabled) means that monitoring health is enabled.
+      - Set visibility of application performance monitoring for the project.
+      - V(disabled) disables application performance monitoring.
+      - V(private) enables application performance monitoring and sets visibility to C(Only project members).
+      - V(enabled) enables application performance monitoring and sets visibility to C(Everyone with access).
     type: str
-    choices: ["private", "disabled", "enabled"]
+    choices: ["disabled", "private", "enabled"]
     version_added: "6.4.0"
   name:
     description:
@@ -221,12 +230,12 @@ options:
     type: str
   only_allow_merge_if_all_discussions_are_resolved:
     description:
-      - All discussions on a merge request (MR) have to be resolved.
+      - Set whether merge requests can only be merged when all the discussions are resolved.
     type: bool
     version_added: "3.4.0"
   only_allow_merge_if_pipeline_succeeds:
     description:
-      - Only allow merges if pipeline succeeded.
+      - Set whether merge requests can only be merged with successful pipelines. This setting is named Pipelines must succeed in the project settings.
     type: bool
     version_added: "3.4.0"
   packages_enabled:
@@ -236,11 +245,14 @@ options:
     version_added: "3.4.0"
   pages_access_level:
     description:
-      - V(private) means that accessing pages tab is allowed only to project members.
-      - V(disabled) means that accessing pages tab is disabled.
-      - V(enabled) means that accessing pages tab is enabled.
+      - Set visibility of GitLab Pages for the project.
+      - V(disabled) disables pages.
+      - V(private) enables pages and sets visibility to C(Only project members).
+      - V(enabled) enables pages and sets visibility to C(Everyone with access).
+      - V(public) enables pages and sets visibility to C(Everyone).
+      - If Pages access control is turned on, private projects accept V(disabled), V(private), and V(public), internal projects accept all four values, and public projects accept V(disabled), V(private), and V(enabled). V(public) is also rejected when public access to Pages is turned off for the instance or group.
     type: str
-    choices: ["private", "disabled", "enabled"]
+    choices: ["disabled", "private", "enabled", "public"]
     version_added: "9.3.0"
   path:
     description:
@@ -249,11 +261,12 @@ options:
     type: str
   releases_access_level:
     description:
-      - V(private) means that accessing release is allowed only to project members.
-      - V(disabled) means that accessing release is disabled.
-      - V(enabled) means that accessing release is enabled.
+      - Set visibility of releases for the project.
+      - V(disabled) disables releases.
+      - V(private) enables releases and sets visibility to C(Only project members).
+      - V(enabled) enables releases and sets visibility to C(Everyone with access).
     type: str
-    choices: ["private", "disabled", "enabled"]
+    choices: ["disabled", "private", "enabled"]
     version_added: "6.4.0"
   remove_source_branch_after_merge:
     description:
@@ -262,19 +275,22 @@ options:
     version_added: "3.4.0"
   repository_access_level:
     description:
-      - V(private) means that accessing repository is allowed only to project members.
-      - V(disabled) means that accessing repository is disabled.
-      - V(enabled) means that accessing repository is enabled.
+      - Set visibility of repository for the project.
+      - V(disabled) disables repository.
+      - V(private) enables repository and sets visibility to C(Only project members).
+      - V(enabled) enables repository and sets visibility to C(Everyone with access).
     type: str
-    choices: ["private", "disabled", "enabled"]
+    choices: ["disabled", "private", "enabled"]
     version_added: "9.3.0"
   security_and_compliance_access_level:
     description:
-      - V(private) means that accessing security and complicance tab is allowed only to project members.
-      - V(disabled) means that accessing security and complicance tab is disabled.
-      - V(enabled) means that accessing security and complicance tab is enabled.
+      - Set visibility of security and compliance for the project.
+      - V(disabled) disables security and compliance.
+      - V(private) enables security and compliance and sets visibility to C(Only project members).
+      - V(enabled) enables security and compliance and sets visibility to C(Everyone with access).
+      - Security testing requires C(Auto DevOps) to be enabled.
     type: str
-    choices: ["private", "disabled", "enabled"]
+    choices: ["disabled", "private", "enabled"]
     version_added: "6.4.0"
   service_desk_enabled:
     description:
@@ -283,7 +299,7 @@ options:
     version_added: "9.3.0"
   shared_runners_enabled:
     description:
-      - Enable shared runners for this project.
+      - Enable shared runners for the project.
     type: bool
     version_added: "3.7.0"
   snippets_enabled:
@@ -318,9 +334,10 @@ options:
     version_added: "3.3.0"
   visibility:
     description:
-      - V(private) Project access must be granted explicitly for each user.
-      - V(internal) The project can be cloned by any logged in user.
-      - V(public) The project can be cloned without any authentication.
+      - Set visibility for the project.
+      - V(private) only members of the project can access the project.
+      - V(internal) any authenticated user, including users with the Guest role, can access the project.
+      - V(public) any user, including unauthenticated users, can access the project.
     default: private
     type: str
     choices: ["private", "internal", "public"]
@@ -328,7 +345,7 @@ options:
       - visibility_level
   wiki_enabled:
     description:
-      - If an wiki for this project should be available or not.
+      - If an wiki for the project should be available or not.
     type: bool
     default: true
 """
@@ -654,7 +671,7 @@ def main():
         dict(
             allow_merge_on_skipped_pipeline=dict(type="bool"),
             avatar_path=dict(type="path"),
-            builds_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
+            builds_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             build_timeout=dict(type="int"),
             ci_config_path=dict(type="str"),
             container_expiration_policy=dict(
@@ -668,33 +685,33 @@ def main():
                     name_regex_keep=dict(type="str"),
                 ),
             ),
-            container_registry_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
+            container_registry_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             default_branch=dict(type="str"),
             description=dict(type="str"),
-            environments_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
-            feature_flags_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
-            forking_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
+            environments_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
+            feature_flags_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
+            forking_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             group=dict(type="str"),
             import_url=dict(type="str"),
-            infrastructure_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
+            infrastructure_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             initialize_with_readme=dict(type="bool", default=False),
-            issues_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
+            issues_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             issues_enabled=dict(type="bool", default=True),
             lfs_enabled=dict(default=False, type="bool"),
             merge_method=dict(type="str", default="merge", choices=["merge", "rebase_merge", "ff"]),
             merge_requests_enabled=dict(type="bool", default=True),
-            model_registry_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
-            monitor_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
+            model_registry_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
+            monitor_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             name=dict(type="str", required=True),
             only_allow_merge_if_all_discussions_are_resolved=dict(type="bool"),
             only_allow_merge_if_pipeline_succeeds=dict(type="bool"),
             packages_enabled=dict(type="bool"),
-            pages_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
+            pages_access_level=dict(type="str", choices=["disabled", "private", "enabled", "public"]),
             path=dict(type="str"),
-            releases_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
+            releases_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             remove_source_branch_after_merge=dict(type="bool"),
-            repository_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
-            security_and_compliance_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
+            repository_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
+            security_and_compliance_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             service_desk_enabled=dict(type="bool"),
             shared_runners_enabled=dict(type="bool"),
             snippets_enabled=dict(default=True, type="bool"),

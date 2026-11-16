@@ -198,6 +198,15 @@ options:
       - If merge requests can be made or not.
     type: bool
     default: true
+  model_experiments_access_level:
+    description:
+      - Set visibility of machine learning model experiments for the project.
+      - V(disabled) disables machine learning model experiments.
+      - V(private) enables machine learning model experiments and sets visibility to C(Only project members).
+      - V(enabled) enables machine learning model experiments and sets visibility to C(Everyone with access).
+    type: str
+    choices: ["disabled", "private", "enabled"]
+    version_added: "14.3.0"
   model_registry_access_level:
     description:
       - V(private) means that accessing model registry tab is allowed only to project members.
@@ -473,6 +482,7 @@ class GitLabProject:
             "lfs_enabled": options["lfs_enabled"],
             "merge_method": options["merge_method"],
             "merge_requests_enabled": options["merge_requests_enabled"],
+            "model_experiments_access_level": options["model_experiments_access_level"],
             "model_registry_access_level": options["model_registry_access_level"],
             "monitor_access_level": options["monitor_access_level"],
             "name": project_name,
@@ -683,6 +693,7 @@ def main():
             lfs_enabled=dict(default=False, type="bool"),
             merge_method=dict(type="str", default="merge", choices=["merge", "rebase_merge", "ff"]),
             merge_requests_enabled=dict(type="bool", default=True),
+            model_experiments_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             model_registry_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             monitor_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             name=dict(type="str", required=True),
@@ -750,6 +761,7 @@ def main():
     lfs_enabled = module.params["lfs_enabled"]
     merge_method = module.params["merge_method"]
     merge_requests_enabled = module.params["merge_requests_enabled"]
+    model_experiments_access_level = module.params["model_experiments_access_level"]
     model_registry_access_level = module.params["model_registry_access_level"]
     monitor_access_level = module.params["monitor_access_level"]
     only_allow_merge_if_all_discussions_are_resolved = module.params["only_allow_merge_if_all_discussions_are_resolved"]
@@ -859,6 +871,7 @@ def main():
                 "lfs_enabled": lfs_enabled,
                 "merge_method": merge_method,
                 "merge_requests_enabled": merge_requests_enabled,
+                "model_experiments_access_level": model_experiments_access_level,
                 "model_registry_access_level": model_registry_access_level,
                 "monitor_access_level": monitor_access_level,
                 "only_allow_merge_if_all_discussions_are_resolved": only_allow_merge_if_all_discussions_are_resolved,

@@ -326,6 +326,11 @@ options:
     choices: ["private", "internal", "public"]
     aliases:
       - visibility_level
+  warn_about_potentially_unwanted_characters:
+    description:
+      - Enable warnings about usage of potentially unwanted characters in the project.
+    type: bool
+    version_added: "14.3.0"
   wiki_enabled:
     description:
       - If an wiki for this project should be available or not.
@@ -491,6 +496,7 @@ class GitLabProject:
             "snippets_enabled": options["snippets_enabled"],
             "squash_option": options["squash_option"],
             "visibility": options["visibility"],
+            "warn_about_potentially_unwanted_characters": options["warn_about_potentially_unwanted_characters"],
             "wiki_enabled": options["wiki_enabled"],
         }
 
@@ -705,6 +711,7 @@ def main():
             visibility=dict(
                 type="str", default="private", choices=["internal", "private", "public"], aliases=["visibility_level"]
             ),
+            warn_about_potentially_unwanted_characters=dict(type="bool"),
             wiki_enabled=dict(type="bool", default=True),
         )
     )
@@ -771,6 +778,7 @@ def main():
     topics = module.params["topics"]
     username = module.params["username"]
     visibility = module.params["visibility"]
+    warn_about_potentially_unwanted_characters = module.params["warn_about_potentially_unwanted_characters"]
     wiki_enabled = module.params["wiki_enabled"]
 
     # Set project_path to project_name if it is empty.
@@ -876,6 +884,7 @@ def main():
                 "squash_option": squash_option,
                 "topics": topics,
                 "visibility": visibility,
+                "warn_about_potentially_unwanted_characters": warn_about_potentially_unwanted_characters,
                 "wiki_enabled": wiki_enabled,
             },
         ):

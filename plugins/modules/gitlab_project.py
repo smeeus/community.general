@@ -61,6 +61,12 @@ options:
       - Custom path to the CI configuration file for this project.
     type: str
     version_added: "3.7.0"
+  cicd_catalog_enabled:
+    description:
+      - Set whether the project is published to the CI/CD Catalog.
+      - Requires the Owner role for the project.
+    type: bool
+    version_added: "14.3.0"
   container_expiration_policy:
     description:
       - Project cleanup policy for its container registry.
@@ -461,6 +467,7 @@ class GitLabProject:
             "builds_access_level": options["builds_access_level"],
             "build_timeout": options["build_timeout"],
             "ci_config_path": options["ci_config_path"],
+            "cicd_catalog_enabled": options["cicd_catalog_enabled"],
             "container_expiration_policy": options["container_expiration_policy"],
             "container_registry_access_level": options["container_registry_access_level"],
             "description": options["description"],
@@ -500,6 +507,9 @@ class GitLabProject:
             project_options["tag_list"] = options["topics"]
         else:
             project_options["topics"] = options["topics"]
+
+        if options["cicd_catalog_enabled"] and not options["description"]:
+            module.fail_json(msg="Param cicd_catalog_enabled needs param description to be set")
 
         # Because we have already call userExists in main()
         is_new_project = self.project_object is None
@@ -657,6 +667,7 @@ def main():
             builds_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             build_timeout=dict(type="int"),
             ci_config_path=dict(type="str"),
+            cicd_catalog_enabled=dict(type="bool"),
             container_expiration_policy=dict(
                 type="dict",
                 options=dict(
@@ -735,6 +746,7 @@ def main():
     builds_access_level = module.params["builds_access_level"]
     build_timeout = module.params["build_timeout"]
     ci_config_path = module.params["ci_config_path"]
+    cicd_catalog_enabled = module.params["cicd_catalog_enabled"]
     container_expiration_policy = module.params["container_expiration_policy"]
     container_registry_access_level = module.params["container_registry_access_level"]
     default_branch = module.params["default_branch"]
@@ -844,6 +856,7 @@ def main():
                 "builds_access_level": builds_access_level,
                 "build_timeout": build_timeout,
                 "ci_config_path": ci_config_path,
+                "cicd_catalog_enabled": cicd_catalog_enabled,
                 "container_expiration_policy": container_expiration_policy,
                 "container_registry_access_level": container_registry_access_level,
                 "default_branch": default_branch,

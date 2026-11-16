@@ -326,9 +326,21 @@ options:
     choices: ["private", "internal", "public"]
     aliases:
       - visibility_level
+  wiki_access_level:
+    description:
+      - Set visibility of the wiki for the project.
+      - V(disabled) disables the wiki.
+      - V(private) enables the wiki and sets visibility to C(Only project members).
+      - V(enabled) enables the wiki and sets visibility to C(Everyone with access).
+      - O(wiki_access_level) and O(wiki_enabled) are mutually exclusive.
+    default: enabled
+    type: str
+    choices: ["disabled", "private", "enabled"]
+    version_added: "14.3.0"
   wiki_enabled:
     description:
-      - If an wiki for this project should be available or not.
+      - If a wiki for the project should be available or not.
+      - O(wiki_access_level) and O(wiki_enabled) are mutually exclusive.
     type: bool
     default: true
 """
@@ -491,6 +503,7 @@ class GitLabProject:
             "snippets_enabled": options["snippets_enabled"],
             "squash_option": options["squash_option"],
             "visibility": options["visibility"],
+            "wiki_access_level": options["wiki_access_level"],
             "wiki_enabled": options["wiki_enabled"],
         }
 
@@ -705,6 +718,7 @@ def main():
             visibility=dict(
                 type="str", default="private", choices=["internal", "private", "public"], aliases=["visibility_level"]
             ),
+            wiki_access_level=dict(type="str", default="enabled", choices=["disabled", "private", "enabled"]),
             wiki_enabled=dict(type="bool", default=True),
         )
     )
@@ -719,6 +733,7 @@ def main():
             ["api_token", "api_job_token"],
             ["group", "username"],
             ["issues_access_level", "issues_enabled"],
+            ["wiki_access_level", "wiki_enabled"],
         ],
         required_together=[
             ["api_username", "api_password"],
@@ -771,6 +786,7 @@ def main():
     topics = module.params["topics"]
     username = module.params["username"]
     visibility = module.params["visibility"]
+    wiki_access_level = module.params["wiki_access_level"]
     wiki_enabled = module.params["wiki_enabled"]
 
     # Set project_path to project_name if it is empty.
@@ -876,6 +892,7 @@ def main():
                 "squash_option": squash_option,
                 "topics": topics,
                 "visibility": visibility,
+                "wiki_access_level": wiki_access_level,
                 "wiki_enabled": wiki_enabled,
             },
         ):

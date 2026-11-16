@@ -286,9 +286,20 @@ options:
       - Enable shared runners for this project.
     type: bool
     version_added: "3.7.0"
+  snippets_access_level:
+    description:
+      - Set visibility of snippets for the project.
+      - V(disabled) disables snippets.
+      - V(private) enables snippets and sets visibility to C(Only project members).
+      - V(enabled) enables snippets and sets visibility to C(Everyone with access).
+      - O(snippets_access_level) and O(snippets_enabled) are mutually exclusive.
+    type: str
+    choices: ["disabled", "private", "enabled"]
+    version_added: "14.3.0"
   snippets_enabled:
     description:
       - If creating snippets should be available or not.
+      - O(snippets_access_level) and O(snippets_enabled) are mutually exclusive.
     type: bool
     default: true
   squash_option:
@@ -488,6 +499,7 @@ class GitLabProject:
             "security_and_compliance_access_level": options["security_and_compliance_access_level"],
             "service_desk_enabled": options["service_desk_enabled"],
             "shared_runners_enabled": options["shared_runners_enabled"],
+            "snippets_access_level": options["snippets_access_level"],
             "snippets_enabled": options["snippets_enabled"],
             "squash_option": options["squash_option"],
             "visibility": options["visibility"],
@@ -697,6 +709,7 @@ def main():
             security_and_compliance_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             service_desk_enabled=dict(type="bool"),
             shared_runners_enabled=dict(type="bool"),
+            snippets_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             snippets_enabled=dict(default=True, type="bool"),
             squash_option=dict(type="str", choices=["never", "always", "default_off", "default_on"]),
             state=dict(type="str", default="present", choices=["absent", "present", "archived", "unarchived"]),
@@ -719,6 +732,7 @@ def main():
             ["api_token", "api_job_token"],
             ["group", "username"],
             ["issues_access_level", "issues_enabled"],
+            ["snippets_access_level", "snippets_enabled"],
         ],
         required_together=[
             ["api_username", "api_password"],
@@ -765,6 +779,7 @@ def main():
     security_and_compliance_access_level = module.params["security_and_compliance_access_level"]
     service_desk_enabled = module.params["service_desk_enabled"]
     shared_runners_enabled = module.params["shared_runners_enabled"]
+    snippets_access_level = module.params["snippets_access_level"]
     snippets_enabled = module.params["snippets_enabled"]
     squash_option = module.params["squash_option"]
     state = module.params["state"]
@@ -872,6 +887,7 @@ def main():
                 "security_and_compliance_access_level": security_and_compliance_access_level,
                 "service_desk_enabled": service_desk_enabled,
                 "shared_runners_enabled": shared_runners_enabled,
+                "snippets_access_level": snippets_access_level,
                 "snippets_enabled": snippets_enabled,
                 "squash_option": squash_option,
                 "topics": topics,

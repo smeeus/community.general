@@ -286,6 +286,11 @@ options:
       - Enable shared runners for this project.
     type: bool
     version_added: "3.7.0"
+  show_default_award_emojis:
+    description:
+      - Show default emoji reactions for the project.
+    type: bool
+    version_added: "14.3.0"
   snippets_enabled:
     description:
       - If creating snippets should be available or not.
@@ -488,6 +493,7 @@ class GitLabProject:
             "security_and_compliance_access_level": options["security_and_compliance_access_level"],
             "service_desk_enabled": options["service_desk_enabled"],
             "shared_runners_enabled": options["shared_runners_enabled"],
+            "show_default_award_emojis": options["show_default_award_emojis"],
             "snippets_enabled": options["snippets_enabled"],
             "squash_option": options["squash_option"],
             "visibility": options["visibility"],
@@ -697,6 +703,7 @@ def main():
             security_and_compliance_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             service_desk_enabled=dict(type="bool"),
             shared_runners_enabled=dict(type="bool"),
+            show_default_award_emojis=dict(type="bool"),
             snippets_enabled=dict(default=True, type="bool"),
             squash_option=dict(type="str", choices=["never", "always", "default_off", "default_on"]),
             state=dict(type="str", default="present", choices=["absent", "present", "archived", "unarchived"]),
@@ -765,6 +772,7 @@ def main():
     security_and_compliance_access_level = module.params["security_and_compliance_access_level"]
     service_desk_enabled = module.params["service_desk_enabled"]
     shared_runners_enabled = module.params["shared_runners_enabled"]
+    show_default_award_emojis = module.params["show_default_award_emojis"]
     snippets_enabled = module.params["snippets_enabled"]
     squash_option = module.params["squash_option"]
     state = module.params["state"]
@@ -872,6 +880,7 @@ def main():
                 "security_and_compliance_access_level": security_and_compliance_access_level,
                 "service_desk_enabled": service_desk_enabled,
                 "shared_runners_enabled": shared_runners_enabled,
+                "show_default_award_emojis": show_default_award_emojis,
                 "snippets_enabled": snippets_enabled,
                 "squash_option": squash_option,
                 "topics": topics,

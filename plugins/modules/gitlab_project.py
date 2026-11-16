@@ -450,6 +450,11 @@ options:
       - Allow users to request member access.
     type: bool
     version_added: "14.3.0"
+  resolve_outdated_diff_discussions:
+    description:
+      - Automatically resolve merge request diffs discussions on lines changed with a push.
+    type: bool
+    version_added: "14.3.0"
   service_desk_enabled:
     description:
       - Enable Service Desk.
@@ -710,6 +715,7 @@ class GitLabProject:
             "requirements_access_level": options["requirements_access_level"],
             "security_and_compliance_access_level": options["security_and_compliance_access_level"],
             "request_access_enabled": options["request_access_enabled"],
+            "resolve_outdated_diff_discussions": options["resolve_outdated_diff_discussions"],
             "service_desk_enabled": options["service_desk_enabled"],
             "shared_runners_enabled": options["shared_runners_enabled"],
             "snippets_access_level": options["snippets_access_level"],
@@ -951,6 +957,7 @@ def main():
             requirements_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             security_and_compliance_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             request_access_enabled=dict(type="bool"),
+            resolve_outdated_diff_discussions=dict(type="bool"),
             service_desk_enabled=dict(type="bool"),
             shared_runners_enabled=dict(type="bool"),
             snippets_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
@@ -1050,6 +1057,7 @@ def main():
     requirements_access_level = module.params["requirements_access_level"]
     security_and_compliance_access_level = module.params["security_and_compliance_access_level"]
     request_access_enabled = module.params["request_access_enabled"]
+    resolve_outdated_diff_discussions = module.params["resolve_outdated_diff_discussions"]
     service_desk_enabled = module.params["service_desk_enabled"]
     shared_runners_enabled = module.params["shared_runners_enabled"]
     snippets_access_level = module.params["snippets_access_level"]
@@ -1184,6 +1192,7 @@ def main():
                 "requirements_access_level": requirements_access_level,
                 "security_and_compliance_access_level": security_and_compliance_access_level,
                 "request_access_enabled": request_access_enabled,
+                "resolve_outdated_diff_discussions": resolve_outdated_diff_discussions,
                 "service_desk_enabled": service_desk_enabled,
                 "shared_runners_enabled": shared_runners_enabled,
                 "snippets_access_level": snippets_access_level,

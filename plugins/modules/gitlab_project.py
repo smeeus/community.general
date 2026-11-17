@@ -300,6 +300,7 @@ options:
     description:
       - If creating snippets should be available or not.
       - O(snippets_access_level) and O(snippets_enabled) are mutually exclusive.
+      - Deprecated. Use O(snippets_access_level) instead.
     type: bool
   squash_option:
     description:

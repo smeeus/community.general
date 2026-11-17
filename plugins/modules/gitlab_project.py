@@ -178,7 +178,6 @@ options:
       - Whether you want to create issues or not.
       - O(issues_access_level) and O(issues_enabled) are mutually exclusive.
     type: bool
-    default: true
   lfs_enabled:
     description:
       - Enable Git large file systems to manages large files such as audio, video, and graphics files.
@@ -679,7 +678,7 @@ def main():
             infrastructure_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             initialize_with_readme=dict(type="bool", default=False),
             issues_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
-            issues_enabled=dict(type="bool", default=True),
+            issues_enabled=dict(type="bool"),
             lfs_enabled=dict(default=False, type="bool"),
             merge_method=dict(type="str", default="merge", choices=["merge", "rebase_merge", "ff"]),
             merge_requests_enabled=dict(type="bool", default=True),

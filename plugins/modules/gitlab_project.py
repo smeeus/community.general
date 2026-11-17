@@ -250,6 +250,7 @@ options:
     description:
       - Whether you want to create issues or not.
       - O(issues_access_level) and O(issues_enabled) are mutually exclusive.
+      - Deprecated. Use O(issues_access_level) instead.
     type: bool
   lfs_enabled:
     description:
@@ -284,6 +285,7 @@ options:
     description:
       - If merge requests can be made or not.
       - O(merge_requests_access_level) and O(merge_requests_enabled) are mutually exclusive.
+      - Deprecated. Use O(merge_requests_access_level) instead.
     type: bool
   merge_trains_enabled:
     description:
@@ -369,6 +371,7 @@ options:
     description:
       - Enable GitLab package repository.
       - O(package_registry_access_level) and O(packages_enabled) are mutually exclusive.
+      - Deprecated. Use O(package_registry_access_level) instead.
     type: bool
     version_added: "3.4.0"
   package_registry_access_level:
@@ -496,6 +499,7 @@ options:
     description:
       - If creating snippets should be available or not.
       - O(snippets_access_level) and O(snippets_enabled) are mutually exclusive.
+      - Deprecated. Use O(snippets_access_level) instead.
     type: bool
   squash_option:
     description:
@@ -569,6 +573,7 @@ options:
     description:
       - If an wiki for the project should be available or not.
       - O(wiki_access_level) and O(wiki_enabled) are mutually exclusive.
+      - Deprecated. Use O(wiki_access_level) instead.
     type: bool
 """
 

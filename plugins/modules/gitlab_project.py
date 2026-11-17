@@ -333,7 +333,6 @@ options:
       - V(private) enables the wiki and sets visibility to C(Only project members).
       - V(enabled) enables the wiki and sets visibility to C(Everyone with access).
       - O(wiki_access_level) and O(wiki_enabled) are mutually exclusive.
-    default: enabled
     type: str
     choices: ["disabled", "private", "enabled"]
     version_added: "14.3.0"
@@ -342,7 +341,6 @@ options:
       - If a wiki for the project should be available or not.
       - O(wiki_access_level) and O(wiki_enabled) are mutually exclusive.
     type: bool
-    default: true
 """
 
 EXAMPLES = r"""
@@ -718,8 +716,8 @@ def main():
             visibility=dict(
                 type="str", default="private", choices=["internal", "private", "public"], aliases=["visibility_level"]
             ),
-            wiki_access_level=dict(type="str", default="enabled", choices=["disabled", "private", "enabled"]),
-            wiki_enabled=dict(type="bool", default=True),
+            wiki_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
+            wiki_enabled=dict(type="bool"),
         )
     )
 

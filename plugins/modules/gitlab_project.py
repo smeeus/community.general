@@ -208,7 +208,6 @@ options:
       - If merge requests can be made or not.
       - O(merge_requests_access_level) and O(merge_requests_enabled) are mutually exclusive.
     type: bool
-    default: true
   model_registry_access_level:
     description:
       - V(private) means that accessing model registry tab is allowed only to project members.
@@ -695,7 +694,7 @@ def main():
             lfs_enabled=dict(default=False, type="bool"),
             merge_method=dict(type="str", default="merge", choices=["merge", "rebase_merge", "ff"]),
             merge_requests_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
-            merge_requests_enabled=dict(type="bool", default=True),
+            merge_requests_enabled=dict(type="bool"),
             model_registry_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             monitor_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             name=dict(type="str", required=True),

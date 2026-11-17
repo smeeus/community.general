@@ -976,12 +976,18 @@ def main():
             infrastructure_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             initialize_with_readme=dict(type="bool", default=False),
             issues_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
-            issues_enabled=dict(type="bool"),
+            issues_enabled=dict(type="bool",
+                removed_in_version="15.0.0",
+                removed_from_collection="community.general",
+            ),
             lfs_enabled=dict(default=False, type="bool"),
             merge_method=dict(type="str", default="merge", choices=["merge", "rebase_merge", "ff"]),
             merge_pipelines_enabled=dict(type="bool"),
             merge_requests_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
-            merge_requests_enabled=dict(type="bool"),
+            merge_requests_enabled=dict(type="bool",
+                removed_in_version="15.0.0",
+                removed_from_collection="community.general",
+            ),
             merge_trains_enabled=dict(type="bool"),
             merge_trains_skip_train_allowed=dict(type="bool"),
             merge_train_enforcement=dict(
@@ -997,7 +1003,10 @@ def main():
             only_allow_merge_if_all_discussions_are_resolved=dict(type="bool"),
             only_allow_merge_if_all_status_checks_passed=dict(type="bool", default=False),
             only_allow_merge_if_pipeline_succeeds=dict(type="bool"),
-            packages_enabled=dict(type="bool"),
+            packages_enabled=dict(type="bool",
+                removed_in_version="15.0.0",
+                removed_from_collection="community.general",
+            ),
             package_registry_access_level=dict(type="str", choices=["disabled", "private", "enabled", "public"]),
             pages_access_level=dict(type="str", choices=["disabled", "private", "enabled", "public"]),
             path=dict(type="str"),
@@ -1015,7 +1024,10 @@ def main():
             shared_runners_enabled=dict(type="bool"),
             show_default_award_emojis=dict(type="bool"),
             snippets_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
-            snippets_enabled=dict(type="bool"),
+            snippets_enabled=dict(type="bool",
+                removed_in_version="15.0.0",
+                removed_from_collection="community.general",
+            ),
             squash_option=dict(type="str", choices=["never", "always", "default_off", "default_on"]),
             state=dict(type="str", default="present", choices=["absent", "present", "archived", "unarchived"]),
             template_name=dict(type="str"),
@@ -1028,7 +1040,10 @@ def main():
             ),
             warn_about_potentially_unwanted_characters=dict(type="bool"),
             wiki_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
-            wiki_enabled=dict(type="bool"),
+            wiki_enabled=dict(type="bool",
+                removed_in_version="15.0.0",
+                removed_from_collection="community.general",
+            ),
         )
     )
 
@@ -1056,6 +1071,41 @@ def main():
 
     # check prerequisites and connect to gitlab server
     gitlab_instance = gitlab_authentication(module)
+
+    if module.params['issues_enabled'] is not None:
+        module.deprecate(
+            msg="The 'issues_enabled' option is deprecated. Use 'issues_access_level' instead.",
+            version='15.0.0',
+            collection_name='community.general',
+        )
+
+    if module.params['merge_requests_enabled'] is not None:
+        module.deprecate(
+            msg="The 'merge_requests_enabled' option is deprecated. Use 'merge_requests_access_level' instead.",
+            version='15.0.0',
+            collection_name='community.general',
+        )
+
+    if module.params['packages_enabled'] is not None:
+        module.deprecate(
+            msg="The 'packages_enabled' option is deprecated. Use 'package_registry_access_level' instead.",
+            version='15.0.0',
+            collection_name='community.general',
+        )
+
+    if module.params['snippets_enabled'] is not None:
+        module.deprecate(
+            msg="The 'snippets_enabled' option is deprecated. Use 'snippets_access_level' instead.",
+            version='15.0.0',
+            collection_name='community.general',
+        )
+
+    if module.params['wiki_enabled'] is not None:
+        module.deprecate(
+            msg="The 'wiki_enabled' option is deprecated. Use 'wiki_access_level' instead.",
+            version='15.0.0',
+            collection_name='community.general',
+        )
 
     allow_merge_on_skipped_pipeline = module.params["allow_merge_on_skipped_pipeline"]
     analytics_access_level = module.params["analytics_access_level"]

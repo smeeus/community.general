@@ -251,7 +251,6 @@ options:
       - Whether you want to create issues or not.
       - O(issues_access_level) and O(issues_enabled) are mutually exclusive.
     type: bool
-    default: true
   lfs_enabled:
     description:
       - Enable Git large file systems to manages large files such as audio, video, and graphics files.
@@ -286,7 +285,6 @@ options:
       - If merge requests can be made or not.
       - O(merge_requests_access_level) and O(merge_requests_enabled) are mutually exclusive.
     type: bool
-    default: true
   merge_trains_enabled:
     description:
       - Enable or disable merge trains.
@@ -499,7 +497,6 @@ options:
       - If creating snippets should be available or not.
       - O(snippets_access_level) and O(snippets_enabled) are mutually exclusive.
     type: bool
-    default: true
   squash_option:
     description:
       - Squash commits when merging.
@@ -565,7 +562,6 @@ options:
       - V(private) enables the wiki and sets visibility to C(Only project members).
       - V(enabled) enables the wiki and sets visibility to C(Everyone with access).
       - O(wiki_access_level) and O(wiki_enabled) are mutually exclusive.
-    default: enabled
     type: str
     choices: ["disabled", "private", "enabled"]
     version_added: "14.3.0"
@@ -574,7 +570,6 @@ options:
       - If an wiki for the project should be available or not.
       - O(wiki_access_level) and O(wiki_enabled) are mutually exclusive.
     type: bool
-    default: true
 """
 
 EXAMPLES = r"""
@@ -976,12 +971,12 @@ def main():
             infrastructure_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             initialize_with_readme=dict(type="bool", default=False),
             issues_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
-            issues_enabled=dict(type="bool", default=True),
+            issues_enabled=dict(type="bool"),
             lfs_enabled=dict(default=False, type="bool"),
             merge_method=dict(type="str", default="merge", choices=["merge", "rebase_merge", "ff"]),
             merge_pipelines_enabled=dict(type="bool"),
             merge_requests_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
-            merge_requests_enabled=dict(type="bool", default=True),
+            merge_requests_enabled=dict(type="bool"),
             merge_trains_enabled=dict(type="bool"),
             merge_trains_skip_train_allowed=dict(type="bool"),
             merge_train_enforcement=dict(
@@ -1015,7 +1010,7 @@ def main():
             shared_runners_enabled=dict(type="bool"),
             show_default_award_emojis=dict(type="bool"),
             snippets_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
-            snippets_enabled=dict(default=True, type="bool"),
+            snippets_enabled=dict(type="bool"),
             squash_option=dict(type="str", choices=["never", "always", "default_off", "default_on"]),
             state=dict(type="str", default="present", choices=["absent", "present", "archived", "unarchived"]),
             template_name=dict(type="str"),
@@ -1027,8 +1022,8 @@ def main():
                 type="str", default="private", choices=["internal", "private", "public"], aliases=["visibility_level"]
             ),
             warn_about_potentially_unwanted_characters=dict(type="bool"),
-            wiki_access_level=dict(type="str", default="enabled", choices=["disabled", "private", "enabled"]),
-            wiki_enabled=dict(type="bool", default=True),
+            wiki_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
+            wiki_enabled=dict(type="bool"),
         )
     )
 

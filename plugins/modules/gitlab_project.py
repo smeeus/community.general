@@ -695,7 +695,10 @@ def main():
             lfs_enabled=dict(default=False, type="bool"),
             merge_method=dict(type="str", default="merge", choices=["merge", "rebase_merge", "ff"]),
             merge_requests_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
-            merge_requests_enabled=dict(type="bool"),
+            merge_requests_enabled=dict(type="bool",
+                removed_in_version="15.0.0",
+                removed_from_collection="community.general",
+            ),
             model_registry_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             monitor_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             name=dict(type="str", required=True),
@@ -743,6 +746,13 @@ def main():
 
     # check prerequisites and connect to gitlab server
     gitlab_instance = gitlab_authentication(module)
+
+    if module.params['merge_requests_enabled'] is not None:
+        module.deprecate(
+            msg="The 'merge_requests_enabled' option is deprecated. Use 'merge_requests_access_level' instead.",
+            version='15.0.0',
+            collection_name='community.general',
+        )
 
     allow_merge_on_skipped_pipeline = module.params["allow_merge_on_skipped_pipeline"]
     avatar_path = module.params["avatar_path"]

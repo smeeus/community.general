@@ -433,6 +433,11 @@ options:
     type: str
     choices: ["disabled", "private", "enabled"]
     version_added: "9.3.0"
+  request_access_enabled:
+    description:
+      - Allow users to request member access.
+    type: bool
+    version_added: "14.3.0"
   requirements_access_level:
     description:
       - Set visibility of requirements management for the project.
@@ -441,21 +446,6 @@ options:
       - V(enabled) enables requirements management and sets visibility to C(Everyone with access).
     type: str
     choices: ["disabled", "private", "enabled"]
-    version_added: "14.3.0"
-  security_and_compliance_access_level:
-    description:
-      - Set visibility of security and compliance for the project.
-      - V(disabled) disables security and compliance.
-      - V(private) enables security and compliance and sets visibility to C(Only project members).
-      - V(enabled) enables security and compliance and sets visibility to C(Everyone with access).
-      - Security testing requires C(Auto DevOps) to be enabled.
-    type: str
-    choices: ["disabled", "private", "enabled"]
-    version_added: "6.4.0"
-  request_access_enabled:
-    description:
-      - Allow users to request member access.
-    type: bool
     version_added: "14.3.0"
   resolve_outdated_diff_discussions:
     description:
@@ -469,6 +459,16 @@ options:
     type: str
     choices: ["disabled", "code_owners"]
     version_added: "14.3.0"
+  security_and_compliance_access_level:
+    description:
+      - Set visibility of security and compliance for the project.
+      - V(disabled) disables security and compliance.
+      - V(private) enables security and compliance and sets visibility to C(Only project members).
+      - V(enabled) enables security and compliance and sets visibility to C(Everyone with access).
+      - Security testing requires C(Auto DevOps) to be enabled.
+    type: str
+    choices: ["disabled", "private", "enabled"]
+    version_added: "6.4.0"
   service_desk_enabled:
     description:
       - Enable Service Desk.
@@ -754,11 +754,11 @@ class GitLabProject:
             "releases_access_level": options["releases_access_level"],
             "remove_source_branch_after_merge": options["remove_source_branch_after_merge"],
             "repository_access_level": options["repository_access_level"],
-            "requirements_access_level": options["requirements_access_level"],
-            "security_and_compliance_access_level": options["security_and_compliance_access_level"],
             "request_access_enabled": options["request_access_enabled"],
+            "requirements_access_level": options["requirements_access_level"],
             "resolve_outdated_diff_discussions": options["resolve_outdated_diff_discussions"],
             "reviewer_assignment_strategy": options["reviewer_assignment_strategy"],
+            "security_and_compliance_access_level": options["security_and_compliance_access_level"],
             "service_desk_enabled": options["service_desk_enabled"],
             "shared_runners_enabled": options["shared_runners_enabled"],
             "show_default_award_emojis": options["show_default_award_emojis"],
@@ -1006,11 +1006,11 @@ def main():
             releases_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             remove_source_branch_after_merge=dict(type="bool"),
             repository_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
-            requirements_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
-            security_and_compliance_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             request_access_enabled=dict(type="bool"),
+            requirements_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             resolve_outdated_diff_discussions=dict(type="bool"),
             reviewer_assignment_strategy=dict(type="str", choices=["disabled", "code_owners"]),
+            security_and_compliance_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             service_desk_enabled=dict(type="bool"),
             shared_runners_enabled=dict(type="bool"),
             show_default_award_emojis=dict(type="bool"),
@@ -1113,11 +1113,11 @@ def main():
     releases_access_level = module.params["releases_access_level"]
     remove_source_branch_after_merge = module.params["remove_source_branch_after_merge"]
     repository_access_level = module.params["repository_access_level"]
-    requirements_access_level = module.params["requirements_access_level"]
-    security_and_compliance_access_level = module.params["security_and_compliance_access_level"]
     request_access_enabled = module.params["request_access_enabled"]
+    requirements_access_level = module.params["requirements_access_level"]
     resolve_outdated_diff_discussions = module.params["resolve_outdated_diff_discussions"]
     reviewer_assignment_strategy = module.params["reviewer_assignment_strategy"]
+    security_and_compliance_access_level = module.params["security_and_compliance_access_level"]
     service_desk_enabled = module.params["service_desk_enabled"]
     shared_runners_enabled = module.params["shared_runners_enabled"]
     show_default_award_emojis = module.params["show_default_award_emojis"]
@@ -1255,11 +1255,11 @@ def main():
                 "releases_access_level": releases_access_level,
                 "remove_source_branch_after_merge": remove_source_branch_after_merge,
                 "repository_access_level": repository_access_level,
-                "requirements_access_level": requirements_access_level,
-                "security_and_compliance_access_level": security_and_compliance_access_level,
                 "request_access_enabled": request_access_enabled,
+                "requirements_access_level": requirements_access_level,
                 "resolve_outdated_diff_discussions": resolve_outdated_diff_discussions,
                 "reviewer_assignment_strategy": reviewer_assignment_strategy,
+                "security_and_compliance_access_level": security_and_compliance_access_level,
                 "service_desk_enabled": service_desk_enabled,
                 "shared_runners_enabled": shared_runners_enabled,
                 "show_default_award_emojis": show_default_award_emojis,

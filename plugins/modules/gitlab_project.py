@@ -301,7 +301,6 @@ options:
       - If creating snippets should be available or not.
       - O(snippets_access_level) and O(snippets_enabled) are mutually exclusive.
     type: bool
-    default: true
   squash_option:
     description:
       - Squash commits when merging.
@@ -710,7 +709,7 @@ def main():
             service_desk_enabled=dict(type="bool"),
             shared_runners_enabled=dict(type="bool"),
             snippets_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
-            snippets_enabled=dict(default=True, type="bool"),
+            snippets_enabled=dict(type="bool"),
             squash_option=dict(type="str", choices=["never", "always", "default_off", "default_on"]),
             state=dict(type="str", default="present", choices=["absent", "present", "archived", "unarchived"]),
             topics=dict(type="list", elements="str"),

@@ -340,6 +340,7 @@ options:
     description:
       - If a wiki for the project should be available or not.
       - O(wiki_access_level) and O(wiki_enabled) are mutually exclusive.
+      - Deprecated. Use O(wiki_access_level) instead.
     type: bool
 """
 

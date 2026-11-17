@@ -177,6 +177,7 @@ options:
     description:
       - Whether you want to create issues or not.
       - O(issues_access_level) and O(issues_enabled) are mutually exclusive.
+      - Deprecated. Use O(issues_access_level) instead.
     type: bool
   lfs_enabled:
     description:

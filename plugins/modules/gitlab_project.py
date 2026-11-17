@@ -710,7 +710,10 @@ def main():
             service_desk_enabled=dict(type="bool"),
             shared_runners_enabled=dict(type="bool"),
             snippets_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
-            snippets_enabled=dict(type="bool"),
+            snippets_enabled=dict(type="bool",
+                removed_in_version="15.0.0",
+                removed_from_collection="community.general",
+            ),
             squash_option=dict(type="str", choices=["never", "always", "default_off", "default_on"]),
             state=dict(type="str", default="present", choices=["absent", "present", "archived", "unarchived"]),
             topics=dict(type="list", elements="str"),
@@ -743,6 +746,13 @@ def main():
 
     # check prerequisites and connect to gitlab server
     gitlab_instance = gitlab_authentication(module)
+
+    if module.params['snippets_enabled'] is not None:
+        module.deprecate(
+            msg="The 'snippets_enabled' option is deprecated. Use 'snippets_access_level' instead.",
+            version='15.0.0',
+            collection_name='community.general',
+        )
 
     allow_merge_on_skipped_pipeline = module.params["allow_merge_on_skipped_pipeline"]
     avatar_path = module.params["avatar_path"]

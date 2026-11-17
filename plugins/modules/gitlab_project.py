@@ -233,6 +233,7 @@ options:
     description:
       - Enable GitLab package repository.
       - O(package_registry_access_level) and O(packages_enabled) are mutually exclusive.
+      - Deprecated. Use O(package_registry_access_level) instead.
     type: bool
     version_added: "3.4.0"
   package_registry_access_level:

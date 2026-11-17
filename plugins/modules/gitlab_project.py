@@ -702,7 +702,10 @@ def main():
             name=dict(type="str", required=True),
             only_allow_merge_if_all_discussions_are_resolved=dict(type="bool"),
             only_allow_merge_if_pipeline_succeeds=dict(type="bool"),
-            packages_enabled=dict(type="bool"),
+            packages_enabled=dict(type="bool",
+                removed_in_version="15.0.0",
+                removed_from_collection="community.general",
+            ),
             package_registry_access_level=dict(type="str", choices=["disabled", "private", "enabled", "public"]),
             pages_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             path=dict(type="str"),
@@ -745,6 +748,13 @@ def main():
 
     # check prerequisites and connect to gitlab server
     gitlab_instance = gitlab_authentication(module)
+
+    if module.params['packages_enabled'] is not None:
+        module.deprecate(
+            msg="The 'packages_enabled' option is deprecated. Use 'package_registry_access_level' instead.",
+            version='15.0.0',
+            collection_name='community.general',
+        )
 
     allow_merge_on_skipped_pipeline = module.params["allow_merge_on_skipped_pipeline"]
     avatar_path = module.params["avatar_path"]

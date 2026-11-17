@@ -207,6 +207,7 @@ options:
     description:
       - If merge requests can be made or not.
       - O(merge_requests_access_level) and O(merge_requests_enabled) are mutually exclusive.
+      - Deprecated. Use O(merge_requests_access_level) instead.
     type: bool
   model_registry_access_level:
     description:

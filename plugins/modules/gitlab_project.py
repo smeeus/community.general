@@ -718,7 +718,10 @@ def main():
                 type="str", default="private", choices=["internal", "private", "public"], aliases=["visibility_level"]
             ),
             wiki_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
-            wiki_enabled=dict(type="bool"),
+            wiki_enabled=dict(type="bool",
+                removed_in_version="15.0.0",
+                removed_from_collection="community.general",
+            ),
         )
     )
 
@@ -743,6 +746,13 @@ def main():
 
     # check prerequisites and connect to gitlab server
     gitlab_instance = gitlab_authentication(module)
+
+    if module.params['wiki_enabled'] is not None:
+        module.deprecate(
+            msg="The 'wiki_enabled' option is deprecated. Use 'wiki_access_level' instead.",
+            version='15.0.0',
+            collection_name='community.general',
+        )
 
     allow_merge_on_skipped_pipeline = module.params["allow_merge_on_skipped_pipeline"]
     avatar_path = module.params["avatar_path"]

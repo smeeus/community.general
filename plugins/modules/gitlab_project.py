@@ -601,10 +601,10 @@ EXAMPLES = r"""
     api_password: "MySecretPassword"
     name: my_first_project
     group: ansible
-    issues_enabled: false
+    issues_access_level: enabled
     merge_method: rebase_merge
-    wiki_enabled: true
-    snippets_enabled: true
+    wiki_access_level: enabled
+    snippets_access_level: enabled
     import_url: http://git.example.com/example/lab.git
     initialize_with_readme: true
     state: present
@@ -640,8 +640,8 @@ EXAMPLES = r"""
     name: my_second_project
     group: "10481470"
     state: unarchived
-    wiki_enabled: false
-    issues_enabled: true
+    wiki_access_level: enabled
+    issues_access_level: enabled
 """
 
 RETURN = r"""

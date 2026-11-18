@@ -32,7 +32,7 @@ attributes:
 options:
   auto_devops_enabled:
     description:
-      - Default to Auto DevOps pipeline for all projects within this group.
+      - Default to Auto DevOps pipeline for all projects within the group.
     type: bool
     version_added: 3.7.0
   avatar_path:
@@ -43,6 +43,7 @@ options:
     version_added: 4.2.0
   default_branch:
     description:
+      - The default branch name for the group's projects
       - All merge requests and commits are made against this branch unless you specify a different one.
     type: str
     version_added: 9.5.0
@@ -52,13 +53,14 @@ options:
     type: str
   enabled_git_access_protocol:
     description:
+      - Enabled protocols for Git access.
       - V(all) means SSH and HTTP(S) is enabled.
       - V(ssh) means only SSH is enabled.
       - V(http) means only HTTP(S) is enabled.
       - Only available for top level groups.
-    choices: ["all", "ssh", "http"]
     type: str
     version_added: 9.5.0
+    choices: ["all", "ssh", "http"]
   force_delete:
     description:
       - Force delete group even if projects in it.
@@ -68,7 +70,7 @@ options:
     version_added: 7.5.0
   lfs_enabled:
     description:
-      - Projects in this group can use Git LFS.
+      - Enable/disable Large File Storage (LFS) for the projects in the group.
     type: bool
     version_added: 9.5.0
   lock_duo_features_enabled:
@@ -79,12 +81,12 @@ options:
     version_added: 9.5.0
   membership_lock:
     description:
-      - Users cannot be added to projects in this group.
+      - Users cannot be added to projects in the group.
     type: bool
     version_added: 9.5.0
   mentions_disabled:
     description:
-      - Group mentions are disabled.
+      - Disable the capability of a group from getting mentioned.
     type: bool
     version_added: 9.5.0
   name:
@@ -116,7 +118,7 @@ options:
   project_creation_level:
     description:
       - Determine if developers can create projects in the group.
-    choices: ["developer", "maintainer", "noone"]
+    choices: ["noone", "developer", "maintainer", "administrator"]
     type: str
     version_added: 3.7.0
   request_access_enabled:
@@ -124,6 +126,11 @@ options:
       - Users can request access (if visibility is public or internal).
     type: bool
     version_added: 9.5.0
+  require_two_factor_authentication:
+    description:
+      - Require all users in the group to set up two-factor authentication.
+    type: bool
+    version_added: 3.7.0
   service_access_tokens_expiration_enforced:
     description:
       - Service account token expiration.
@@ -133,14 +140,9 @@ options:
     version_added: 9.5.0
   share_with_group_lock:
     description:
-      - Projects cannot be shared with other groups.
+      - Prevent sharing of projects in the group with another group.
     type: bool
     version_added: 9.5.0
-  require_two_factor_authentication:
-    description:
-      - Require all users in this group to setup two-factor authentication.
-    type: bool
-    version_added: 3.7.0
   state:
     description:
       - Create or delete group.
@@ -156,24 +158,28 @@ options:
     version_added: 3.7.0
   two_factor_grace_period:
     description:
-      - Delay 2FA enforcement (hours).
+      - Time before Two-factor authentication is enforced (in hours).
     type: str
     version_added: 9.5.0
   visibility:
     description:
-      - Default visibility of the group.
+      - Set visibility for the group.
+      - V(private) only members of the group can access the project.
+      - V(internal) any authenticated user, including users with the Guest role, can access the group.
+      - V(public) any user, including unauthenticated users, can access the group.
       - V(unchanged) does not set any visibility but instead uses the instance default or the visibility level of the parent group (if one exists).
         V(unchanged) has been added in community.general 13.5.0
-    choices: ["private", "internal", "public", "unchanged"]
     default: private
     type: str
+    choices: ["private", "internal", "public", "unchanged"]
   wiki_access_level:
     description:
-      - V(enabled) means everyone can access the wiki.
-      - V(private) means only members of this group can access the wiki.
-      - V(disabled) means group-level wiki is disabled.
-    choices: ["enabled", "private", "disabled"]
+      - Set visibility of the wiki for the group.
+      - V(disabled) disables the wiki.
+      - V(private) enables the wiki and sets visibility to C(Only group members).
+      - V(enabled) enables the wiki and sets visibility to C(Everyone with access).
     type: str
+    choices: ["disabled", "private", "enabled"]
     version_added: 9.5.0
 """
 
@@ -430,7 +436,7 @@ def main():
             path=dict(type="str"),
             prevent_forking_outside_group=dict(type="bool"),
             prevent_sharing_groups_outside_hierarchy=dict(type="bool"),
-            project_creation_level=dict(type="str", choices=["developer", "maintainer", "noone"]),
+            project_creation_level=dict(type="str", choices=["noone", "developer", "maintainer", "administrator"]),
             request_access_enabled=dict(type="bool"),
             require_two_factor_authentication=dict(type="bool"),
             service_access_tokens_expiration_enforced=dict(type="bool"),
@@ -439,7 +445,7 @@ def main():
             subgroup_creation_level=dict(type="str", choices=["maintainer", "owner"]),
             two_factor_grace_period=dict(type="str"),
             visibility=dict(type="str", default="private", choices=["internal", "private", "public", "unchanged"]),
-            wiki_access_level=dict(type="str", choices=["enabled", "private", "disabled"]),
+            wiki_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
         )
     )
 

@@ -193,6 +193,11 @@ options:
     choices: ["ff", "merge", "rebase_merge"]
     default: merge
     version_added: "1.0.0"
+  merge_pipelines_enabled:
+    description:
+      - Enable or disable merged results pipelines.
+    type: bool
+    version_added: "14.3.0"
   merge_requests_enabled:
     description:
       - If merge requests can be made or not.
@@ -472,6 +477,7 @@ class GitLabProject:
             "issues_enabled": options["issues_enabled"],
             "lfs_enabled": options["lfs_enabled"],
             "merge_method": options["merge_method"],
+            "merge_pipelines_enabled": options["merge_pipelines_enabled"],
             "merge_requests_enabled": options["merge_requests_enabled"],
             "model_registry_access_level": options["model_registry_access_level"],
             "monitor_access_level": options["monitor_access_level"],
@@ -682,6 +688,7 @@ def main():
             issues_enabled=dict(type="bool", default=True),
             lfs_enabled=dict(default=False, type="bool"),
             merge_method=dict(type="str", default="merge", choices=["merge", "rebase_merge", "ff"]),
+            merge_pipelines_enabled=dict(type="bool"),
             merge_requests_enabled=dict(type="bool", default=True),
             model_registry_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             monitor_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
@@ -749,6 +756,7 @@ def main():
     issues_enabled = module.params["issues_enabled"]
     lfs_enabled = module.params["lfs_enabled"]
     merge_method = module.params["merge_method"]
+    merge_pipelines_enabled = module.params["merge_pipelines_enabled"]
     merge_requests_enabled = module.params["merge_requests_enabled"]
     model_registry_access_level = module.params["model_registry_access_level"]
     monitor_access_level = module.params["monitor_access_level"]
@@ -858,6 +866,7 @@ def main():
                 "issues_enabled": issues_enabled,
                 "lfs_enabled": lfs_enabled,
                 "merge_method": merge_method,
+                "merge_pipelines_enabled": merge_pipelines_enabled,
                 "merge_requests_enabled": merge_requests_enabled,
                 "model_registry_access_level": model_registry_access_level,
                 "monitor_access_level": monitor_access_level,

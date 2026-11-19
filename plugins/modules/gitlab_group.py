@@ -59,6 +59,11 @@ options:
     choices: ["all", "ssh", "http"]
     type: str
     version_added: 9.5.0
+  experiment_features_enabled:
+    description:
+      - Enable experiment features for the group.
+    type: bool
+    version_added: "14.3.0"
   force_delete:
     description:
       - Force delete group even if projects in it.
@@ -285,6 +290,7 @@ class GitLabGroup:
             "auto_devops_enabled": options["auto_devops_enabled"],
             "default_branch": options["default_branch"],
             "description": options["description"],
+            "experiment_features_enabled": options["experiment_features_enabled"],
             "lfs_enabled": options["lfs_enabled"],
             "membership_lock": options["membership_lock"],
             "mentions_disabled": options["mentions_disabled"],
@@ -420,6 +426,7 @@ def main():
             default_branch=dict(type="str"),
             description=dict(type="str"),
             enabled_git_access_protocol=dict(type="str", choices=["all", "ssh", "http"]),
+            experiment_features_enabled=dict(type="bool"),
             force_delete=dict(type="bool", default=False),
             lfs_enabled=dict(type="bool"),
             lock_duo_features_enabled=dict(type="bool"),
@@ -472,6 +479,7 @@ def main():
     default_branch = module.params["default_branch"]
     description = module.params["description"]
     enabled_git_access_protocol = module.params["enabled_git_access_protocol"]
+    experiment_features_enabled = module.params["experiment_features_enabled"]
     force_delete = module.params["force_delete"]
     group_name = module.params["name"]
     group_path = module.params["path"]
@@ -526,6 +534,7 @@ def main():
                 "default_branch": default_branch,
                 "description": description,
                 "enabled_git_access_protocol": enabled_git_access_protocol,
+                "experiment_features_enabled": experiment_features_enabled,
                 "lfs_enabled": lfs_enabled,
                 "lock_duo_features_enabled": lock_duo_features_enabled,
                 "membership_lock": membership_lock,

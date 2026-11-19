@@ -124,6 +124,11 @@ options:
     type: str
     choices: ["private", "disabled", "enabled"]
     version_added: "6.4.0"
+  external_authorization_classification_label:
+    description:
+      - The classification label for the project.
+    type: str
+    version_added: "14.3.0"
   feature_flags_access_level:
     description:
       - V(private) means that feature rollout is allowed only to project members.
@@ -465,6 +470,7 @@ class GitLabProject:
             "container_registry_access_level": options["container_registry_access_level"],
             "description": options["description"],
             "environments_access_level": options["environments_access_level"],
+            "external_authorization_classification_label": options["external_authorization_classification_label"],
             "feature_flags_access_level": options["feature_flags_access_level"],
             "forking_access_level": options["forking_access_level"],
             "infrastructure_access_level": options["infrastructure_access_level"],
@@ -672,6 +678,7 @@ def main():
             default_branch=dict(type="str"),
             description=dict(type="str"),
             environments_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
+            external_authorization_classification_label=dict(type="str"),
             feature_flags_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             forking_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             group=dict(type="str"),
@@ -739,6 +746,7 @@ def main():
     container_registry_access_level = module.params["container_registry_access_level"]
     default_branch = module.params["default_branch"]
     environments_access_level = module.params["environments_access_level"]
+    external_authorization_classification_label = module.params["external_authorization_classification_label"]
     feature_flags_access_level = module.params["feature_flags_access_level"]
     forking_access_level = module.params["forking_access_level"]
     group_identifier = module.params["group"]
@@ -849,6 +857,7 @@ def main():
                 "default_branch": default_branch,
                 "description": project_description,
                 "environments_access_level": environments_access_level,
+                "external_authorization_classification_label": external_authorization_classification_label,
                 "feature_flags_access_level": feature_flags_access_level,
                 "forking_access_level": forking_access_level,
                 "import_url": import_url,

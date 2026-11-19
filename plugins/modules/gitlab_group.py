@@ -110,6 +110,11 @@ options:
       - Enable email notifications.
     type: bool
     version_added: "14.3.0"
+  experiment_features_enabled:
+    description:
+      - Enable experiment features for the group.
+    type: bool
+    version_added: "14.3.0"
   force_delete:
     description:
       - Force delete group even if projects in it.
@@ -353,6 +358,7 @@ class GitLabGroup:
             "duo_availability": options["duo_availability"],
             "duo_remote_flows_availability": options["duo_remote_flows_availability"],
             "emails_enabled": options["emails_enabled"],
+            "experiment_features_enabled": options["experiment_features_enabled"],
             "lfs_enabled": options["lfs_enabled"],
             "membership_lock": options["membership_lock"],
             "mentions_disabled": options["mentions_disabled"],
@@ -501,6 +507,7 @@ def main():
             duo_remote_flows_availability=dict(type="bool"),
             enabled_git_access_protocol=dict(type="str", choices=["all", "ssh", "http"]),
             emails_enabled=dict(type="bool"),
+            experiment_features_enabled=dict(type="bool"),
             force_delete=dict(type="bool", default=False),
             lfs_enabled=dict(type="bool"),
             lock_duo_features_enabled=dict(type="bool"),
@@ -568,6 +575,7 @@ def main():
     duo_remote_flows_availability = module.params["duo_remote_flows_availability"]
     enabled_git_access_protocol = module.params["enabled_git_access_protocol"]
     emails_enabled = module.params["emails_enabled"]
+    experiment_features_enabled = module.params["experiment_features_enabled"]
     force_delete = module.params["force_delete"]
     group_name = module.params["name"]
     group_path = module.params["path"]
@@ -626,6 +634,7 @@ def main():
                 "duo_remote_flows_availability": duo_remote_flows_availability,
                 "enabled_git_access_protocol": enabled_git_access_protocol,
                 "emails_enabled": emails_enabled,
+                "experiment_features_enabled": experiment_features_enabled,
                 "lfs_enabled": lfs_enabled,
                 "lock_duo_features_enabled": lock_duo_features_enabled,
                 "membership_lock": membership_lock,

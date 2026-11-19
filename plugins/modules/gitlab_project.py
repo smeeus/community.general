@@ -349,6 +349,12 @@ options:
       - Set whether merge requests can only be merged when all the discussions are resolved.
     type: bool
     version_added: "3.4.0"
+  only_allow_merge_if_all_status_checks_passed:
+    description:
+      - Indicates that merges of merge requests should be blocked unless all status checks have passed.
+    default: false
+    type: bool
+    version_added: "14.3.0"
   only_allow_merge_if_pipeline_succeeds:
     description:
       - Set whether merge requests can only be merged with successful pipelines. This setting is named Pipelines must succeed in the project settings.
@@ -674,6 +680,9 @@ class GitLabProject:
             "only_allow_merge_if_all_discussions_are_resolved": options[
                 "only_allow_merge_if_all_discussions_are_resolved"
             ],
+            "only_allow_merge_if_all_status_checks_passed": options[
+                "only_allow_merge_if_all_status_checks_passed"
+            ],
             "only_allow_merge_if_pipeline_succeeds": options["only_allow_merge_if_pipeline_succeeds"],
             "packages_enabled": options["packages_enabled"],
             "package_registry_access_level": options["package_registry_access_level"],
@@ -910,6 +919,7 @@ def main():
             monitor_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             name=dict(type="str", required=True),
             only_allow_merge_if_all_discussions_are_resolved=dict(type="bool"),
+            only_allow_merge_if_all_status_checks_passed=dict(type="bool", default=False),
             only_allow_merge_if_pipeline_succeeds=dict(type="bool"),
             packages_enabled=dict(type="bool"),
             package_registry_access_level=dict(type="str", choices=["disabled", "private", "enabled", "public"]),
@@ -1003,6 +1013,7 @@ def main():
     model_registry_access_level = module.params["model_registry_access_level"]
     monitor_access_level = module.params["monitor_access_level"]
     only_allow_merge_if_all_discussions_are_resolved = module.params["only_allow_merge_if_all_discussions_are_resolved"]
+    only_allow_merge_if_all_status_checks_passed = module.params["only_allow_merge_if_all_status_checks_passed"]
     only_allow_merge_if_pipeline_succeeds = module.params["only_allow_merge_if_pipeline_succeeds"]
     packages_enabled = module.params["packages_enabled"]
     package_registry_access_level = module.params["package_registry_access_level"]
@@ -1135,6 +1146,7 @@ def main():
                 "model_registry_access_level": model_registry_access_level,
                 "monitor_access_level": monitor_access_level,
                 "only_allow_merge_if_all_discussions_are_resolved": only_allow_merge_if_all_discussions_are_resolved,
+                "only_allow_merge_if_all_status_checks_passed": only_allow_merge_if_all_status_checks_passed,
                 "only_allow_merge_if_pipeline_succeeds": only_allow_merge_if_pipeline_succeeds,
                 "packages_enabled": packages_enabled,
                 "package_registry_access_level": package_registry_access_level,

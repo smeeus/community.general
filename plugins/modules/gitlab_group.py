@@ -50,6 +50,20 @@ options:
     description:
       - A description for the group.
     type: str
+  duo_availability:
+    description:
+      - GitLab Duo availability setting.
+    type: str
+    choices: ["default_on", "default_off", "never_on"]
+    version_added: 14.3.0
+  duo_remote_flows_availability:
+    description:
+      - V(true) turns on GitLab Duo remote flows for the group and lets subgroups and projects change the setting.
+      - V(false) turns off remote flows and enforces the setting for all subgroups and projects.
+      - Sets C(duo_remote_flows_enabled) and C(lock_duo_remote_flows_enabled), which this endpoint does not accept directly.
+      - Ignored if a parent group or the instance enforces the setting.
+    type: bool
+    version_added: 14.3.0
   enabled_git_access_protocol:
     description:
       - V(all) means SSH and HTTP(S) is enabled.
@@ -285,6 +299,8 @@ class GitLabGroup:
             "auto_devops_enabled": options["auto_devops_enabled"],
             "default_branch": options["default_branch"],
             "description": options["description"],
+            "duo_availability": options["duo_availability"],
+            "duo_remote_flows_availability": options["duo_remote_flows_availability"],
             "lfs_enabled": options["lfs_enabled"],
             "membership_lock": options["membership_lock"],
             "mentions_disabled": options["mentions_disabled"],
@@ -419,6 +435,8 @@ def main():
             avatar_path=dict(type="path"),
             default_branch=dict(type="str"),
             description=dict(type="str"),
+            duo_availability=dict(type="str", choices=["default_on", "default_off", "never_on"]),
+            duo_remote_flows_availability=dict(type="bool"),
             enabled_git_access_protocol=dict(type="str", choices=["all", "ssh", "http"]),
             force_delete=dict(type="bool", default=False),
             lfs_enabled=dict(type="bool"),
@@ -471,6 +489,8 @@ def main():
     avatar_path = module.params["avatar_path"]
     default_branch = module.params["default_branch"]
     description = module.params["description"]
+    duo_availability = module.params["duo_availability"]
+    duo_remote_flows_availability = module.params["duo_remote_flows_availability"]
     enabled_git_access_protocol = module.params["enabled_git_access_protocol"]
     force_delete = module.params["force_delete"]
     group_name = module.params["name"]
@@ -525,6 +545,8 @@ def main():
                 "avatar_path": avatar_path,
                 "default_branch": default_branch,
                 "description": description,
+                "duo_availability": duo_availability,
+                "duo_remote_flows_availability": duo_remote_flows_availability,
                 "enabled_git_access_protocol": enabled_git_access_protocol,
                 "lfs_enabled": lfs_enabled,
                 "lock_duo_features_enabled": lock_duo_features_enabled,

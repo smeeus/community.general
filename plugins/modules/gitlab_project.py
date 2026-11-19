@@ -198,6 +198,16 @@ options:
       - If merge requests can be made or not.
     type: bool
     default: true
+  mirror_trigger_builds:
+    description:
+      - Pull mirroring triggers builds.
+    type: bool
+    version_added: "14.3.0"
+  mirror:
+    description:
+      - Enables pull mirroring in a project.
+    type: bool
+    version_added: "14.3.0"
   model_registry_access_level:
     description:
       - V(private) means that accessing model registry tab is allowed only to project members.
@@ -473,6 +483,8 @@ class GitLabProject:
             "lfs_enabled": options["lfs_enabled"],
             "merge_method": options["merge_method"],
             "merge_requests_enabled": options["merge_requests_enabled"],
+            "mirror_trigger_builds": options["mirror_trigger_builds"],
+            "mirror": options["mirror"],
             "model_registry_access_level": options["model_registry_access_level"],
             "monitor_access_level": options["monitor_access_level"],
             "name": project_name,
@@ -683,6 +695,8 @@ def main():
             lfs_enabled=dict(default=False, type="bool"),
             merge_method=dict(type="str", default="merge", choices=["merge", "rebase_merge", "ff"]),
             merge_requests_enabled=dict(type="bool", default=True),
+            mirror_trigger_builds=dict(type="bool"),
+            mirror=dict(type="bool"),
             model_registry_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             monitor_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             name=dict(type="str", required=True),
@@ -750,6 +764,8 @@ def main():
     lfs_enabled = module.params["lfs_enabled"]
     merge_method = module.params["merge_method"]
     merge_requests_enabled = module.params["merge_requests_enabled"]
+    mirror_trigger_builds = module.params["mirror_trigger_builds"]
+    mirror = module.params["mirror"]
     model_registry_access_level = module.params["model_registry_access_level"]
     monitor_access_level = module.params["monitor_access_level"]
     only_allow_merge_if_all_discussions_are_resolved = module.params["only_allow_merge_if_all_discussions_are_resolved"]
@@ -859,6 +875,8 @@ def main():
                 "lfs_enabled": lfs_enabled,
                 "merge_method": merge_method,
                 "merge_requests_enabled": merge_requests_enabled,
+                "mirror_trigger_builds": mirror_trigger_builds,
+                "mirror": mirror,
                 "model_registry_access_level": model_registry_access_level,
                 "monitor_access_level": monitor_access_level,
                 "only_allow_merge_if_all_discussions_are_resolved": only_allow_merge_if_all_discussions_are_resolved,

@@ -144,6 +144,13 @@ options:
     description:
       - ID or the full path of the group of which this projects belongs to.
     type: str
+  group_with_project_templates_id:
+    description:
+      - For group-level custom templates, specifies ID or the full path of the group from which all the custom project templates are sourced.
+      - Leave empty for instance-level templates.
+      - Requires O(use_custom_template) to be V(true).
+    type: int
+    version_added: "14.3.0"
   import_url:
     description:
       - Git repository which is imported into gitlab.
@@ -304,6 +311,18 @@ options:
     default: present
     type: str
     choices: ["present", "absent", "archived", "unarchived"]
+  template_name:
+    description:
+      - When used without O(use_custom_template), name of a built-in project template.
+      - When used with O(use_custom_template), name of a custom project template.
+    type: str
+    version_added: "14.3.0"
+  template_project_id:
+    description:
+      - When used with O(use_custom_template), project ID of a custom project template.
+      - Using a project ID is preferable to using O(template_name) because O(template_name) can be ambiguous.
+    type: int
+    version_added: "14.3.0"
   topics:
     description:
       - A topic or list of topics to be assigned to a project.
@@ -311,6 +330,11 @@ options:
     type: list
     elements: str
     version_added: "6.6.0"
+  use_custom_template:
+    description:
+      - Use either custom instance or group, with O(group_with_project_templates_id), project template.
+    type: bool
+    version_added: "14.3.0"
   username:
     description:
       - Used to create a personal project under a user's name.
@@ -467,6 +491,7 @@ class GitLabProject:
             "environments_access_level": options["environments_access_level"],
             "feature_flags_access_level": options["feature_flags_access_level"],
             "forking_access_level": options["forking_access_level"],
+            "group_with_project_templates_id": options["group_with_project_templates_id"],
             "infrastructure_access_level": options["infrastructure_access_level"],
             "issues_access_level": options["issues_access_level"],
             "issues_enabled": options["issues_enabled"],
@@ -490,6 +515,9 @@ class GitLabProject:
             "shared_runners_enabled": options["shared_runners_enabled"],
             "snippets_enabled": options["snippets_enabled"],
             "squash_option": options["squash_option"],
+            "template_name": options["template_name"],
+            "template_project_id": options["template_project_id"],
+            "use_custom_template": options["use_custom_template"],
             "visibility": options["visibility"],
             "wiki_enabled": options["wiki_enabled"],
         }
@@ -500,6 +528,9 @@ class GitLabProject:
             project_options["tag_list"] = options["topics"]
         else:
             project_options["topics"] = options["topics"]
+
+        if options["group_with_project_templates_id"] and not options["use_custom_template"]:
+            module.fail_json(msg="Param group_with_project_templates_id requires use_custom_template to be true")
 
         # Because we have already call userExists in main()
         is_new_project = self.project_object is None
@@ -675,6 +706,7 @@ def main():
             feature_flags_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             forking_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             group=dict(type="str"),
+            group_with_project_templates_id=dict(type="int"),
             import_url=dict(type="str"),
             infrastructure_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             initialize_with_readme=dict(type="bool", default=False),
@@ -700,7 +732,10 @@ def main():
             snippets_enabled=dict(default=True, type="bool"),
             squash_option=dict(type="str", choices=["never", "always", "default_off", "default_on"]),
             state=dict(type="str", default="present", choices=["absent", "present", "archived", "unarchived"]),
+            template_name=dict(type="str"),
+            template_project_id=dict(type="int"),
             topics=dict(type="list", elements="str"),
+            use_custom_template=dict(type="bool"),
             username=dict(type="str"),
             visibility=dict(
                 type="str", default="private", choices=["internal", "private", "public"], aliases=["visibility_level"]
@@ -742,6 +777,7 @@ def main():
     feature_flags_access_level = module.params["feature_flags_access_level"]
     forking_access_level = module.params["forking_access_level"]
     group_identifier = module.params["group"]
+    group_with_project_templates_id = module.params["group_with_project_templates_id"]
     import_url = module.params["import_url"]
     infrastructure_access_level = module.params["infrastructure_access_level"]
     initialize_with_readme = module.params["initialize_with_readme"]
@@ -768,7 +804,10 @@ def main():
     snippets_enabled = module.params["snippets_enabled"]
     squash_option = module.params["squash_option"]
     state = module.params["state"]
+    template_name = module.params["template_name"]
+    template_project_id = module.params["template_project_id"]
     topics = module.params["topics"]
+    use_custom_template = module.params["use_custom_template"]
     username = module.params["username"]
     visibility = module.params["visibility"]
     wiki_enabled = module.params["wiki_enabled"]
@@ -851,6 +890,7 @@ def main():
                 "environments_access_level": environments_access_level,
                 "feature_flags_access_level": feature_flags_access_level,
                 "forking_access_level": forking_access_level,
+                "group_with_project_templates_id": group_with_project_templates_id,
                 "import_url": import_url,
                 "infrastructure_access_level": infrastructure_access_level,
                 "initialize_with_readme": initialize_with_readme,
@@ -874,7 +914,10 @@ def main():
                 "shared_runners_enabled": shared_runners_enabled,
                 "snippets_enabled": snippets_enabled,
                 "squash_option": squash_option,
+                "template_name": template_name,
+                "template_project_id": template_project_id,
                 "topics": topics,
+                "use_custom_template": use_custom_template,
                 "visibility": visibility,
                 "wiki_enabled": wiki_enabled,
             },

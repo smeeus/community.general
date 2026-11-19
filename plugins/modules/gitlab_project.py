@@ -185,6 +185,11 @@ options:
     type: bool
     default: false
     version_added: "2.0.0"
+  max_pipelines_per_merge_train:
+    description:
+      - Maximum number of parallel pipelines per merge train.
+    type: int
+    version_added: "14.3.0"
   merge_method:
     description:
       - What requirements are placed upon merges.
@@ -198,6 +203,23 @@ options:
       - If merge requests can be made or not.
     type: bool
     default: true
+  merge_trains_enabled:
+    description:
+      - Enable or disable merge trains.
+    type: bool
+    version_added: "14.3.0"
+  merge_trains_skip_train_allowed:
+    description:
+      - Allows merge train merge requests to be merged without waiting for pipelines to finish.
+    type: bool
+    version_added: "14.3.0"
+  merge_train_enforcement:
+    description:
+      - Merge train enforcement level.
+      - Has no effect unless merge trains are enabled for the project.
+    type: str
+    choices: ["allow_bypass", "enforce_for_all_users", "enforce_with_owner_override"]
+    version_added: "14.3.0"
   model_registry_access_level:
     description:
       - V(private) means that accessing model registry tab is allowed only to project members.
@@ -471,8 +493,12 @@ class GitLabProject:
             "issues_access_level": options["issues_access_level"],
             "issues_enabled": options["issues_enabled"],
             "lfs_enabled": options["lfs_enabled"],
+            "max_pipelines_per_merge_train": options["max_pipelines_per_merge_train"],
             "merge_method": options["merge_method"],
             "merge_requests_enabled": options["merge_requests_enabled"],
+            "merge_trains_enabled": options["merge_trains_enabled"],
+            "merge_trains_skip_train_allowed": options["merge_trains_skip_train_allowed"],
+            "merge_train_enforcement": options["merge_train_enforcement"],
             "model_registry_access_level": options["model_registry_access_level"],
             "monitor_access_level": options["monitor_access_level"],
             "name": project_name,
@@ -681,8 +707,14 @@ def main():
             issues_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             issues_enabled=dict(type="bool", default=True),
             lfs_enabled=dict(default=False, type="bool"),
+            max_pipelines_per_merge_train=dict(type="int"),
             merge_method=dict(type="str", default="merge", choices=["merge", "rebase_merge", "ff"]),
             merge_requests_enabled=dict(type="bool", default=True),
+            merge_trains_enabled=dict(type="bool"),
+            merge_trains_skip_train_allowed=dict(type="bool"),
+            merge_train_enforcement=dict(
+                type="str", choices=["allow_bypass", "enforce_for_all_users", "enforce_with_owner_override"]
+            ),
             model_registry_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             monitor_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             name=dict(type="str", required=True),
@@ -748,8 +780,12 @@ def main():
     issues_access_level = module.params["issues_access_level"]
     issues_enabled = module.params["issues_enabled"]
     lfs_enabled = module.params["lfs_enabled"]
+    max_pipelines_per_merge_train = module.params["max_pipelines_per_merge_train"]
     merge_method = module.params["merge_method"]
     merge_requests_enabled = module.params["merge_requests_enabled"]
+    merge_trains_enabled = module.params["merge_trains_enabled"]
+    merge_trains_skip_train_allowed = module.params["merge_trains_skip_train_allowed"]
+    merge_train_enforcement = module.params["merge_train_enforcement"]
     model_registry_access_level = module.params["model_registry_access_level"]
     monitor_access_level = module.params["monitor_access_level"]
     only_allow_merge_if_all_discussions_are_resolved = module.params["only_allow_merge_if_all_discussions_are_resolved"]
@@ -857,8 +893,12 @@ def main():
                 "issues_access_level": issues_access_level,
                 "issues_enabled": issues_enabled,
                 "lfs_enabled": lfs_enabled,
+                "max_pipelines_per_merge_train": max_pipelines_per_merge_train,
                 "merge_method": merge_method,
                 "merge_requests_enabled": merge_requests_enabled,
+                "merge_trains_enabled": merge_trains_enabled,
+                "merge_trains_skip_train_allowed": merge_trains_skip_train_allowed,
+                "merge_train_enforcement": merge_train_enforcement,
                 "model_registry_access_level": model_registry_access_level,
                 "monitor_access_level": monitor_access_level,
                 "only_allow_merge_if_all_discussions_are_resolved": only_allow_merge_if_all_discussions_are_resolved,

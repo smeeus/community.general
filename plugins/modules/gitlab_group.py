@@ -47,6 +47,36 @@ options:
       - All merge requests and commits are made against this branch unless you specify a different one.
     type: str
     version_added: 9.5.0
+  default_branch_protection_defaults:
+    description:
+      - The default branch name for the group's projects.
+    type: dict
+    suboptions:
+      allowed_to_push:
+        description:
+          - An array of access levels allowed to push.
+        type: list
+        elements: str
+        choices: ["devloper", "maintainer"]
+      allow_force_push:
+        description:
+          - Allow force push for all users with push access.
+        type: bool
+      allowed_to_merge:
+        description:
+          - An array of access levels allowed to merge.
+        type: list
+        elements: str
+        choices: ["devloper", "maintainer"]
+      developer_can_initial_push:
+        description:
+          - Allow developers to initial push.
+        type: bool
+      code_owner_approval_required:
+        description:
+          - Require Code Owner approval.
+        type: bool
+    version_added: 14.3.0
   description:
     description:
       - A description for the group.
@@ -277,6 +307,15 @@ from ansible_collections.community.general.plugins.module_utils._gitlab import (
 )
 
 
+from enum import IntEnum
+class GitLabGroupAccessLevel(IntEnum):
+  guest = 10
+  planner = 15
+  reporter = 20
+  developer = 30
+  maintainer = 40
+  owner = 50
+
 class GitLabGroup:
     def __init__(self, module, gitlab_instance):
         self._module = module
@@ -304,6 +343,7 @@ class GitLabGroup:
         payload = {
             "auto_devops_enabled": options["auto_devops_enabled"],
             "default_branch": options["default_branch"],
+            "default_branch_protection_defaults": options["default_branch_protection_defaults"],
             "description": options["description"],
             "duo_availability": options["duo_availability"],
             "duo_remote_flows_availability": options["duo_remote_flows_availability"],
@@ -440,6 +480,16 @@ def main():
             auto_devops_enabled=dict(type="bool"),
             avatar_path=dict(type="path"),
             default_branch=dict(type="str"),
+            default_branch_protection_defaults=dict(
+                type="dict",
+                options=dict(
+                    allowed_to_push=dict(type="list", elements="str", choices=["devloper", "maintainer"]),
+                    allow_force_push=dict(type="bool"),
+                    allowed_to_merge=dict(type="list", elements="str", choices=["devloper", "maintainer"]),
+                    developer_can_initial_push=dict(type="bool"),
+                    code_owner_approval_required=dict(type="bool"),
+                ),
+            ),
             description=dict(type="str"),
             duo_availability=dict(type="str", choices=["default_on", "default_off", "never_on"]),
             duo_remote_flows_availability=dict(type="bool"),
@@ -490,6 +540,18 @@ def main():
         visibility = None
     else:
         visibility = module.params["visibility"]
+
+    if module.params["default_branch_protection_defaults"]:
+        param_dict = {key: value for key, value in module.params["default_branch_protection_defaults"].items() if value is not None}
+        for arg_key, arg_value in param_dict.items():
+            if arg_key in ["allowed_to_push", "allowed_to_merge"]:
+                new_val = [GitLabGroupAccessLevel[k] for k in arg_value]
+                setattr(param_dict, arg_key, new_val)
+            else:
+                setattr(param_dict, arg_key, arg_value)
+        default_branch_protection_defaults = param_dict
+    else:
+        default_branch_protection_defaults = None
 
     auto_devops_enabled = module.params["auto_devops_enabled"]
     avatar_path = module.params["avatar_path"]
@@ -550,6 +612,7 @@ def main():
                 "auto_devops_enabled": auto_devops_enabled,
                 "avatar_path": avatar_path,
                 "default_branch": default_branch,
+                "default_branch_protection_defaults": default_branch_protection_defaults,
                 "description": description,
                 "duo_availability": duo_availability,
                 "duo_remote_flows_availability": duo_remote_flows_availability,

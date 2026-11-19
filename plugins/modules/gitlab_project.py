@@ -268,6 +268,13 @@ options:
     type: str
     choices: ["private", "disabled", "enabled"]
     version_added: "9.3.0"
+  reviewer_assignment_strategy:
+    description:
+      - Strategy used to automatically assign reviewers to merge requests.
+      - This attribute can also return C(dap_powered) for projects configured before GitLab 19.4.
+    type: str
+    choices: ["disabled", "code_owners"]
+    version_added: "14.3.0"
   security_and_compliance_access_level:
     description:
       - V(private) means that accessing security and complicance tab is allowed only to project members.
@@ -485,6 +492,7 @@ class GitLabProject:
             "releases_access_level": options["releases_access_level"],
             "remove_source_branch_after_merge": options["remove_source_branch_after_merge"],
             "repository_access_level": options["repository_access_level"],
+            "reviewer_assignment_strategy": options["reviewer_assignment_strategy"],
             "security_and_compliance_access_level": options["security_and_compliance_access_level"],
             "service_desk_enabled": options["service_desk_enabled"],
             "shared_runners_enabled": options["shared_runners_enabled"],
@@ -694,6 +702,7 @@ def main():
             releases_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             remove_source_branch_after_merge=dict(type="bool"),
             repository_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
+            reviewer_assignment_strategy=dict(type="str", choices=["disabled", "code_owners"]),
             security_and_compliance_access_level=dict(type="str", choices=["private", "disabled", "enabled"]),
             service_desk_enabled=dict(type="bool"),
             shared_runners_enabled=dict(type="bool"),
@@ -762,6 +771,7 @@ def main():
     releases_access_level = module.params["releases_access_level"]
     remove_source_branch_after_merge = module.params["remove_source_branch_after_merge"]
     repository_access_level = module.params["repository_access_level"]
+    reviewer_assignment_strategy = module.params["reviewer_assignment_strategy"]
     security_and_compliance_access_level = module.params["security_and_compliance_access_level"]
     service_desk_enabled = module.params["service_desk_enabled"]
     shared_runners_enabled = module.params["shared_runners_enabled"]
@@ -869,6 +879,7 @@ def main():
                 "releases_access_level": releases_access_level,
                 "remove_source_branch_after_merge": remove_source_branch_after_merge,
                 "repository_access_level": repository_access_level,
+                "reviewer_assignment_strategy": reviewer_assignment_strategy,
                 "security_and_compliance_access_level": security_and_compliance_access_level,
                 "service_desk_enabled": service_desk_enabled,
                 "shared_runners_enabled": shared_runners_enabled,

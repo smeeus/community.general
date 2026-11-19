@@ -176,6 +176,11 @@ options:
     type: str
     choices: ["disabled", "private", "enabled"]
     version_added: "6.4.0"
+  external_authorization_classification_label:
+    description:
+      - The classification label for the project.
+    type: str
+    version_added: "14.3.0"
   feature_flags_access_level:
     description:
       - Set visibility of feature flags for the project.
@@ -603,6 +608,7 @@ class GitLabProject:
             "description": options["description"],
             "emails_enabled": options["emails_enabled"],
             "environments_access_level": options["environments_access_level"],
+            "external_authorization_classification_label": options["external_authorization_classification_label"],
             "feature_flags_access_level": options["feature_flags_access_level"],
             "forking_access_level": options["forking_access_level"],
             "infrastructure_access_level": options["infrastructure_access_level"],
@@ -827,6 +833,7 @@ def main():
             description=dict(type="str"),
             emails_enabled=dict(type="bool"),
             environments_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
+            external_authorization_classification_label=dict(type="str"),
             feature_flags_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             forking_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             group=dict(type="str"),
@@ -912,6 +919,7 @@ def main():
     default_branch = module.params["default_branch"]
     emails_enabled = module.params["emails_enabled"]
     environments_access_level = module.params["environments_access_level"]
+    external_authorization_classification_label = module.params["external_authorization_classification_label"]
     feature_flags_access_level = module.params["feature_flags_access_level"]
     forking_access_level = module.params["forking_access_level"]
     group_identifier = module.params["group"]
@@ -1036,6 +1044,7 @@ def main():
                 "description": project_description,
                 "emails_enabled": emails_enabled,
                 "environments_access_level": environments_access_level,
+                "external_authorization_classification_label": external_authorization_classification_label,
                 "feature_flags_access_level": feature_flags_access_level,
                 "forking_access_level": forking_access_level,
                 "import_url": import_url,

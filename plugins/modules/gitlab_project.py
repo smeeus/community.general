@@ -302,6 +302,16 @@ options:
       - Maximum number of parallel pipelines per merge train.
     type: int
     version_added: "14.3.0"
+  mirror_trigger_builds:
+    description:
+      - Pull mirroring triggers builds.
+    type: bool
+    version_added: "14.3.0"
+  mirror:
+    description:
+      - Enables pull mirroring in a project.
+    type: bool
+    version_added: "14.3.0"
   model_experiments_access_level:
     description:
       - Set visibility of machine learning model experiments for the project.
@@ -655,6 +665,8 @@ class GitLabProject:
             "merge_trains_skip_train_allowed": options["merge_trains_skip_train_allowed"],
             "merge_train_enforcement": options["merge_train_enforcement"],
             "max_pipelines_per_merge_train": options["max_pipelines_per_merge_train"],
+            "mirror_trigger_builds": options["mirror_trigger_builds"],
+            "mirror": options["mirror"],
             "model_experiments_access_level": options["model_experiments_access_level"],
             "model_registry_access_level": options["model_registry_access_level"],
             "monitor_access_level": options["monitor_access_level"],
@@ -891,6 +903,8 @@ def main():
                 type="str", choices=["allow_bypass", "enforce_for_all_users", "enforce_with_owner_override"]
             ),
             max_pipelines_per_merge_train=dict(type="int"),
+            mirror_trigger_builds=dict(type="bool"),
+            mirror=dict(type="bool"),
             model_experiments_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             model_registry_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
             monitor_access_level=dict(type="str", choices=["disabled", "private", "enabled"]),
@@ -983,6 +997,8 @@ def main():
     merge_trains_skip_train_allowed = module.params["merge_trains_skip_train_allowed"]
     merge_train_enforcement = module.params["merge_train_enforcement"]
     max_pipelines_per_merge_train = module.params["max_pipelines_per_merge_train"]
+    mirror_trigger_builds = module.params["mirror_trigger_builds"]
+    mirror = module.params["mirror"]
     model_experiments_access_level = module.params["model_experiments_access_level"]
     model_registry_access_level = module.params["model_registry_access_level"]
     monitor_access_level = module.params["monitor_access_level"]
@@ -1113,6 +1129,8 @@ def main():
                 "merge_trains_skip_train_allowed": merge_trains_skip_train_allowed,
                 "merge_train_enforcement": merge_train_enforcement,
                 "max_pipelines_per_merge_train": max_pipelines_per_merge_train,
+                "mirror_trigger_builds": mirror_trigger_builds,
+                "mirror": mirror,
                 "model_experiments_access_level": model_experiments_access_level,
                 "model_registry_access_level": model_registry_access_level,
                 "monitor_access_level": monitor_access_level,

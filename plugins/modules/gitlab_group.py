@@ -30,6 +30,88 @@ attributes:
     support: none
 
 options:
+  ai_settings_attributes:
+    description:
+      - AI-related settings for the group.
+      - GitLab Duo features must be enabled.
+    type: dict
+    suboptions:
+      ai_catalog_restricted_to_group_hierarchy:
+        description:
+          - When V(true), restricts the AI Catalog to items in the top-level group hierarchy.
+          - Can only be set on top-level groups.
+        type: bool
+      ai_usage_data_collection_enabled:
+        description:
+          - When V(true), enables AI usage data collection for the group.
+        type: bool
+      allow_all_unix_sockets:
+        description:
+          - When V(true), allows all Unix sockets for GitLab Duo Agent Platform.
+        type: bool
+      allow_project_extension:
+        description:
+          - When V(true), allows projects to extend the network access domain allowlist for GitLab Duo Agent Platform.
+        type: bool
+      duo_agent_platform_enabled:
+        description:
+          - When V(true), enables GitLab Duo Agent Platform features for the group.
+        type: bool
+      duo_workflow_file_attachments_enabled:
+        description:
+          - When V(true), allows file attachments in GitLab Duo Chat for the group.
+          - Can only be set on top-level groups.
+        type: bool
+      duo_workflow_mcp_enabled:
+        description:
+          - When V(true), enables MCP support for GitLab Duo Agent Platform.
+        type: bool
+      foundational_agents_default_enabled:
+        description:
+          - When V(true), new foundational agents are enabled by default for the group.
+        type: bool
+      include_recommended_allowed:
+        description:
+          - When V(true), includes recommended domains in the network access allowlist for GitLab Duo Agent Platform.
+        type: bool
+      minimum_access_level_enable_on_projects:
+        description:
+          - The minimum access level required to enable GitLab Duo Agent Platform on projects.
+          - Available when the C(dap_group_customizable_permissions) feature flag is enabled.
+        type: str
+        choices: ["devloper", "maintainer", "owner"]
+      minimum_access_level_execute:
+        description:
+          - The minimum access level required for users to use GitLab Duo Agent Platform features.
+          - Available when the C(dap_group_customizable_permissions) feature flag is enabled.
+        type: str
+        choices: ["guest", "planner", "reporter", "devloper", "maintainer", "owner"]
+      minimum_access_level_execute_async:
+        description:
+          - The minimum access level required to execute GitLab Duo Agent Platform features in CI/CD.
+          - Available when the C(dap_group_customizable_permissions) feature flag is enabled.
+        type: str
+        choices: ["devloper", "maintainer", "owner"]
+      minimum_access_level_manage:
+        description:
+          - The minimum access level required to manage GitLab Duo Agent Platform.
+          - Available when the C(dap_group_customizable_permissions) feature flag is enabled.
+        type: str
+        choices: ["devloper", "maintainer", "owner"]
+      prompt_injection_protection_level:
+        description:
+          - The prompt injection protection level.
+        type: str
+        choices: ["no_checks", "log_only", "interrupt"]
+      require_sandbox:
+        description:
+          - When V(true), flows that run on GitLab Runner fail when the execution environment sandbox is unavailable, instead of running without it.
+        type: bool
+      web_search_enabled:
+        description:
+          - When V(true), enables web search in GitLab Duo Chat for the group.
+        type: bool
+    version_added: 14.3.0
   auto_devops_enabled:
     description:
       - Default to Auto DevOps pipeline for all projects within the group.
@@ -351,6 +433,7 @@ class GitLabGroup:
         changed = False
 
         payload = {
+            "ai_settings_attributes": options["ai_settings_attributes"],
             "auto_devops_enabled": options["auto_devops_enabled"],
             "default_branch": options["default_branch"],
             "default_branch_protection_defaults": options["default_branch_protection_defaults"],
@@ -489,6 +572,27 @@ def main():
     argument_spec.update(auth_argument_spec())
     argument_spec.update(
         dict(
+            ai_settings_attributes=dict(
+                type="dict",
+                options=dict(
+                    ai_catalog_restricted_to_group_hierarchy=dict(type="bool"),
+                    ai_usage_data_collection_enabled=dict(type="bool"),
+                    allow_all_unix_sockets=dict(type="bool"),
+                    allow_project_extension=dict(type="bool"),
+                    duo_agent_platform_enabled=dict(type="bool"),
+                    duo_workflow_file_attachments_enabled=dict(type="bool"),
+                    duo_workflow_mcp_enabled=dict(type="bool"),
+                    foundational_agents_default_enabled=dict(type="bool"),
+                    include_recommended_allowed=dict(type="bool"),
+                    minimum_access_level_enable_on_projects=dict(type="str", choices=["devloper", "maintainer", "owner"]),
+                    minimum_access_level_execute=dict(type="str", choices=["guest", "planner", "reporter", "devloper", "maintainer", "owner"]),
+                    minimum_access_level_execute_async=dict(type="str", choices=["devloper", "maintainer", "owner"]),
+                    minimum_access_level_manage=dict(type="str", choices=["devloper", "maintainer", "owner"]),
+                    prompt_injection_protection_level=dict(type="str", choices=["no_checks", "log_only", "interrupt"]),
+                    require_sandbox=dict(type="bool"),
+                    web_search_enabled=dict(type="bool"),
+                ),
+            ),
             auto_devops_enabled=dict(type="bool"),
             avatar_path=dict(type="path"),
             default_branch=dict(type="str"),
@@ -554,6 +658,19 @@ def main():
         visibility = None
     else:
         visibility = module.params["visibility"]
+
+    if module.params["ai_settings_attributes"]:
+        param_dict = {key: value for key, value in module.params["ai_settings_attributes"].items() if value is not None}
+        for arg_key, arg_value in param_dict.items():
+            if arg_key in ["minimum_access_level_enable_on_projects", "minimum_access_level_execute",
+                           "minimum_access_level_execute_async", "minimum_access_level_manage"]:
+                new_val = GitLabGroupAccessLevel[arg_value]
+                setattr(param_dict, arg_key, new_val)
+            else:
+                setattr(param_dict, arg_key, arg_value)
+        ai_settings_attributes = param_dict
+    else:
+        ai_settings_attributes = None
 
     if module.params["default_branch_protection_defaults"]:
         param_dict = {key: value for key, value in module.params["default_branch_protection_defaults"].items() if value is not None}
@@ -625,6 +742,7 @@ def main():
             group_name,
             parent_group,
             {
+                "ai_settings_attributes": ai_settings_attributes,
                 "auto_devops_enabled": auto_devops_enabled,
                 "avatar_path": avatar_path,
                 "default_branch": default_branch,

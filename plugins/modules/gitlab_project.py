@@ -370,7 +370,7 @@ EXAMPLES = r"""
     group: ansible
     issues_enabled: false
     merge_method: rebase_merge
-    wiki_enabled: true
+    wiki_access_level: enabled
     snippets_enabled: true
     import_url: http://git.example.com/example/lab.git
     initialize_with_readme: true
@@ -407,7 +407,7 @@ EXAMPLES = r"""
     name: my_second_project
     group: "10481470"
     state: unarchived
-    wiki_enabled: false
+    wiki_access_level: enabled
     issues_enabled: true
 """
 

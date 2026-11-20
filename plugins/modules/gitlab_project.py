@@ -371,7 +371,7 @@ EXAMPLES = r"""
     issues_enabled: false
     merge_method: rebase_merge
     wiki_enabled: true
-    snippets_enabled: true
+    snippets_access_level: enabled
     import_url: http://git.example.com/example/lab.git
     initialize_with_readme: true
     state: present

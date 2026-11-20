@@ -357,7 +357,7 @@ EXAMPLES = r"""
     api_password: "MySecretPassword"
     name: my_first_project
     group: ansible
-    issues_enabled: false
+    issues_access_level: enabled
     merge_method: rebase_merge
     wiki_enabled: true
     snippets_enabled: true
@@ -397,7 +397,7 @@ EXAMPLES = r"""
     group: "10481470"
     state: unarchived
     wiki_enabled: false
-    issues_enabled: true
+    issues_access_level: enabled
 """
 
 RETURN = r"""
